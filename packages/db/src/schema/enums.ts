@@ -60,9 +60,7 @@ export const licenseStatusEnum = pgEnum("license_status", [
   "expired",
 ]);
 
-export const itemKindEnum = pgEnum("item_kind", [
-  "mbe_single_best_answer",
-]);
+export const itemKindEnum = pgEnum("item_kind", ["mbe_single_best_answer"]);
 
 export const contentBlockKindEnum = pgEnum("content_block_kind", [
   "text",

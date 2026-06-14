@@ -6,3 +6,11 @@ dist/
 !.env.example
 .DS_Store
 coverage/
+
+# Playwright
+test-results/
+playwright-report/
+.playwright/
+
+# Vite/PWA build
+dev-dist/

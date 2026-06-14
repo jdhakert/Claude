@@ -7,10 +7,39 @@
     "node": ">=20"
   },
   "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm --parallel --filter @barready/api --filter @barready/client dev",
+    "dev:api": "pnpm --filter @barready/api dev",
+    "dev:client": "pnpm --filter @barready/client dev",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "pnpm -r test",
+    "test:e2e": "playwright test",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
     "db:generate": "pnpm --filter @barready/db generate",
     "db:migrate": "pnpm --filter @barready/db migrate",
     "db:seed": "pnpm --filter @barready/db seed",
-    "test": "pnpm -r test"
+    "prepare": "husky || true"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@playwright/test": "^1.49.1",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,css,html}": "prettier --write",
+    "*.{ts,tsx}": "eslint --fix"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

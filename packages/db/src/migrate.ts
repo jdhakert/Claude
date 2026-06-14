@@ -8,7 +8,9 @@ async function main() {
   if (!url) throw new Error("DATABASE_URL is required to run migrations");
   const sql = postgres(url, { max: 1 });
   const db = drizzle(sql);
-  await migrate(db, { migrationsFolder: new URL("../drizzle", import.meta.url).pathname });
+  await migrate(db, {
+    migrationsFolder: new URL("../drizzle", import.meta.url).pathname,
+  });
   await sql.end();
   console.log("migrations applied");
 }

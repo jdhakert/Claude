@@ -8,7 +8,11 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { pk, timestamps } from "./_shared";
-import { courseTypeEnum, enrollmentStatusEnum, jurisdictionEnum } from "./enums";
+import {
+  courseTypeEnum,
+  enrollmentStatusEnum,
+  jurisdictionEnum,
+} from "./enums";
 import { users } from "./identity";
 
 /**
@@ -44,7 +48,9 @@ export const enrollments = pgTable(
     status: enrollmentStatusEnum("status").notNull().default("active"),
     ...timestamps,
   },
-  (t) => [uniqueIndex("enrollments_user_course_unique").on(t.userId, t.courseId)],
+  (t) => [
+    uniqueIndex("enrollments_user_course_unique").on(t.userId, t.courseId),
+  ],
 );
 
 /** Top-level subject, e.g. Evidence. `examWeight` drives prioritization. */

@@ -52,7 +52,10 @@ export async function seed(db: AnyDb) {
     targetExamDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 70),
     weeklyTimeBudgetMinutes: "600",
     priorAttempts: "0",
-    onboarding: { personas: ["first_time", "mbe_weak"], selfRated: { Evidence: 2 } },
+    onboarding: {
+      personas: ["first_time", "mbe_weak"],
+      selfRated: { Evidence: 2 },
+    },
   });
 
   await db.insert(schema.subscriptions).values({
@@ -116,16 +119,40 @@ export async function seed(db: AnyDb) {
   const [evidence] = await db
     .insert(schema.subjects)
     .values([
-      { courseId: course!.id, slug: "evidence", name: "Evidence", examWeight: 1, sortOrder: 1 },
-      { courseId: course!.id, slug: "contracts", name: "Contracts", examWeight: 1, sortOrder: 2 },
+      {
+        courseId: course!.id,
+        slug: "evidence",
+        name: "Evidence",
+        examWeight: 1,
+        sortOrder: 1,
+      },
+      {
+        courseId: course!.id,
+        slug: "contracts",
+        name: "Contracts",
+        examWeight: 1,
+        sortOrder: 2,
+      },
     ])
     .returning();
 
   const [hearsay] = await db
     .insert(schema.subtopics)
     .values([
-      { subjectId: evidence!.id, slug: "hearsay", name: "Hearsay", examWeight: 1.5, sortOrder: 1 },
-      { subjectId: evidence!.id, slug: "relevance", name: "Relevance", examWeight: 1, sortOrder: 2 },
+      {
+        subjectId: evidence!.id,
+        slug: "hearsay",
+        name: "Hearsay",
+        examWeight: 1.5,
+        sortOrder: 1,
+      },
+      {
+        subjectId: evidence!.id,
+        slug: "relevance",
+        name: "Relevance",
+        examWeight: 1,
+        sortOrder: 2,
+      },
     ])
     .returning();
 
@@ -136,14 +163,16 @@ export async function seed(db: AnyDb) {
         subtopicId: hearsay!.id,
         slug: "present-sense-impression",
         name: "Present sense impression",
-        description: "A statement describing an event made while or immediately after perceiving it.",
+        description:
+          "A statement describing an event made while or immediately after perceiving it.",
         examWeight: 1.2,
       },
       {
         subtopicId: hearsay!.id,
         slug: "hearsay-definition",
         name: "Definition of hearsay",
-        description: "An out-of-court statement offered to prove the truth of the matter asserted.",
+        description:
+          "An out-of-court statement offered to prove the truth of the matter asserted.",
         examWeight: 1,
       },
     ])
@@ -154,7 +183,11 @@ export async function seed(db: AnyDb) {
       issueId: pse!.id,
       statement:
         "A present sense impression is a statement describing or explaining an event or condition, made while or immediately after the declarant perceived it; it is admissible as an exception to the rule against hearsay.",
-      elements: ["describes/explains an event", "made during or immediately after perceiving", "by the declarant"],
+      elements: [
+        "describes/explains an event",
+        "made during or immediately after perceiving",
+        "by the declarant",
+      ],
       mnemonic: "See it, say it (right away).",
     },
   ]);
@@ -165,8 +198,7 @@ export async function seed(db: AnyDb) {
     .values({
       subtopicId: hearsay!.id,
       primaryIssueId: pse!.id,
-      stem:
-        "At a community fair, a bystander watching a hot-air balloon said aloud, as the basket tipped, \"The left burner just cut out!\" A spectator who overheard this later repeats it at trial to prove the burner failed. Over a hearsay objection, the statement is most likely:",
+      stem: 'At a community fair, a bystander watching a hot-air balloon said aloud, as the basket tipped, "The left burner just cut out!" A spectator who overheard this later repeats it at trial to prove the burner failed. Over a hearsay objection, the statement is most likely:',
       difficulty: 0.55,
       ...lic,
     })
@@ -175,17 +207,48 @@ export async function seed(db: AnyDb) {
   const choices = await db
     .insert(schema.answerChoices)
     .values([
-      { itemId: item!.id, label: "A", body: "Admissible as a present sense impression.", isCorrect: true, rationale: "The statement describes the event as the declarant perceived it, made contemporaneously — the present sense impression exception applies.", sortOrder: 1 },
-      { itemId: item!.id, label: "B", body: "Inadmissible because it is hearsay not within any exception.", isCorrect: false, rationale: "It is hearsay, but a recognized exception (present sense impression) applies, so this is wrong.", sortOrder: 2 },
-      { itemId: item!.id, label: "C", body: "Admissible because it is not offered for its truth.", isCorrect: false, rationale: "It IS offered for its truth (that the burner failed), so this rationale fails.", sortOrder: 3 },
-      { itemId: item!.id, label: "D", body: "Inadmissible because the declarant is unidentified.", isCorrect: false, rationale: "An unidentified declarant does not defeat the present sense impression exception.", sortOrder: 4 },
+      {
+        itemId: item!.id,
+        label: "A",
+        body: "Admissible as a present sense impression.",
+        isCorrect: true,
+        rationale:
+          "The statement describes the event as the declarant perceived it, made contemporaneously — the present sense impression exception applies.",
+        sortOrder: 1,
+      },
+      {
+        itemId: item!.id,
+        label: "B",
+        body: "Inadmissible because it is hearsay not within any exception.",
+        isCorrect: false,
+        rationale:
+          "It is hearsay, but a recognized exception (present sense impression) applies, so this is wrong.",
+        sortOrder: 2,
+      },
+      {
+        itemId: item!.id,
+        label: "C",
+        body: "Admissible because it is not offered for its truth.",
+        isCorrect: false,
+        rationale:
+          "It IS offered for its truth (that the burner failed), so this rationale fails.",
+        sortOrder: 3,
+      },
+      {
+        itemId: item!.id,
+        label: "D",
+        body: "Inadmissible because the declarant is unidentified.",
+        isCorrect: false,
+        rationale:
+          "An unidentified declarant does not defeat the present sense impression exception.",
+        sortOrder: 4,
+      },
     ])
     .returning();
 
   await db.insert(schema.explanations).values({
     itemId: item!.id,
-    body:
-      "The statement is an out-of-court statement offered for its truth, so it is hearsay. However, it describes an event (the burner cutting out) and was made while the declarant was perceiving it. That satisfies the present sense impression exception, so it is admissible. (A) is correct.",
+    body: "The statement is an out-of-court statement offered for its truth, so it is hearsay. However, it describes an event (the burner cutting out) and was made while the declarant was perceiving it. That satisfies the present sense impression exception, so it is admissible. (A) is correct.",
   });
 
   await db.insert(schema.itemIssues).values([
@@ -218,15 +281,44 @@ export async function seed(db: AnyDb) {
   // --- Essay rubric + prompt ---
   const [rubric] = await db
     .insert(schema.essayRubrics)
-    .values({ name: "MEE Essay Rubric", description: "Standard essay scoring dimensions." })
+    .values({
+      name: "MEE Essay Rubric",
+      description: "Standard essay scoring dimensions.",
+    })
     .returning();
 
   await db.insert(schema.essayRubricCriteria).values([
-    { rubricId: rubric!.id, dimension: "issue_spotting", description: "Identified the issues a model answer raises.", maxScore: 5, sortOrder: 1 },
-    { rubricId: rubric!.id, dimension: "rule_statement", maxScore: 5, sortOrder: 2 },
-    { rubricId: rubric!.id, dimension: "application", maxScore: 5, sortOrder: 3 },
-    { rubricId: rubric!.id, dimension: "organization", maxScore: 5, sortOrder: 4 },
-    { rubricId: rubric!.id, dimension: "time_management", maxScore: 5, sortOrder: 5 },
+    {
+      rubricId: rubric!.id,
+      dimension: "issue_spotting",
+      description: "Identified the issues a model answer raises.",
+      maxScore: 5,
+      sortOrder: 1,
+    },
+    {
+      rubricId: rubric!.id,
+      dimension: "rule_statement",
+      maxScore: 5,
+      sortOrder: 2,
+    },
+    {
+      rubricId: rubric!.id,
+      dimension: "application",
+      maxScore: 5,
+      sortOrder: 3,
+    },
+    {
+      rubricId: rubric!.id,
+      dimension: "organization",
+      maxScore: 5,
+      sortOrder: 4,
+    },
+    {
+      rubricId: rubric!.id,
+      dimension: "time_management",
+      maxScore: 5,
+      sortOrder: 5,
+    },
   ]);
 
   const [prompt] = await db
@@ -258,8 +350,12 @@ export async function seed(db: AnyDb) {
       title: "Drafting a Persuasive Memo (Original Closed-Universe PT)",
       instructions:
         "Using only the provided File and Library, draft a persuasive memorandum advising whether the bystander's statement is admissible.",
-      fileLibrary: { files: ["client_intake_memo.txt"], library: ["fictional_evidence_code_excerpt.txt"] },
-      modelWorkProduct: "A memorandum applying the fictional evidence-code excerpt to the file facts...",
+      fileLibrary: {
+        files: ["client_intake_memo.txt"],
+        library: ["fictional_evidence_code_excerpt.txt"],
+      },
+      modelWorkProduct:
+        "A memorandum applying the fictional evidence-code excerpt to the file facts...",
       timeLimitMinutes: 90,
       ...lic,
     })
@@ -269,15 +365,46 @@ export async function seed(db: AnyDb) {
   const [diagnostic, fullLength] = await db
     .insert(schema.exams)
     .values([
-      { courseId: course!.id, kind: "diagnostic", title: "UBE Diagnostic", config: { adaptive: true } },
-      { courseId: course!.id, kind: "full_length", title: "UBE Full-Length Simulation #1", config: { sections: 3 } },
+      {
+        courseId: course!.id,
+        kind: "diagnostic",
+        title: "UBE Diagnostic",
+        config: { adaptive: true },
+      },
+      {
+        courseId: course!.id,
+        kind: "full_length",
+        title: "UBE Full-Length Simulation #1",
+        config: { sections: 3 },
+      },
     ])
     .returning();
 
   await db.insert(schema.examSections).values([
-    { examId: fullLength!.id, kind: "mbe", title: "MBE — Morning", itemCount: 100, timeLimitMinutes: 180, sortOrder: 1 },
-    { examId: fullLength!.id, kind: "mee_essay", title: "MEE Essays", itemCount: 6, timeLimitMinutes: 180, sortOrder: 2 },
-    { examId: fullLength!.id, kind: "mpt_performance_test", title: "MPT", itemCount: 2, timeLimitMinutes: 180, sortOrder: 3 },
+    {
+      examId: fullLength!.id,
+      kind: "mbe",
+      title: "MBE — Morning",
+      itemCount: 100,
+      timeLimitMinutes: 180,
+      sortOrder: 1,
+    },
+    {
+      examId: fullLength!.id,
+      kind: "mee_essay",
+      title: "MEE Essays",
+      itemCount: 6,
+      timeLimitMinutes: 180,
+      sortOrder: 2,
+    },
+    {
+      examId: fullLength!.id,
+      kind: "mpt_performance_test",
+      title: "MPT",
+      itemCount: 2,
+      timeLimitMinutes: 180,
+      sortOrder: 3,
+    },
   ]);
 
   // --- A realistic attempt: diagnostic sitting + one answered question ---
@@ -329,7 +456,8 @@ export async function seed(db: AnyDb) {
     .values({
       userId: student!.id,
       essayPromptId: prompt!.id,
-      responseText: "The statement is hearsay but likely admissible as a present sense impression...",
+      responseText:
+        "The statement is hearsay but likely admissible as a present sense impression...",
       timeSpentSeconds: 1750,
       status: "submitted",
       submittedAt: new Date(),
@@ -337,8 +465,18 @@ export async function seed(db: AnyDb) {
     .returning();
 
   await db.insert(schema.essayScores).values([
-    { essaySubmissionId: submission!.id, dimension: "issue_spotting", score: 3, isSelfAssessment: true },
-    { essaySubmissionId: submission!.id, dimension: "application", score: 2, isSelfAssessment: true },
+    {
+      essaySubmissionId: submission!.id,
+      dimension: "issue_spotting",
+      score: 3,
+      isSelfAssessment: true,
+    },
+    {
+      essaySubmissionId: submission!.id,
+      dimension: "application",
+      score: 2,
+      isSelfAssessment: true,
+    },
   ]);
 
   await db.insert(schema.ptSubmissions).values({
@@ -352,17 +490,62 @@ export async function seed(db: AnyDb) {
 
   // --- Progress snapshots at every grain ---
   await db.insert(schema.progressSnapshots).values([
-    { userId: student!.id, courseId: course!.id, level: "overall", mastery: 0.58, confidence: 0.6, coverage: 0.7, recency: 0.8, readiness: 0.55 },
-    { userId: student!.id, courseId: course!.id, level: "subject", refId: evidence!.id, mastery: 0.5, confidence: 0.6, coverage: 0.65 },
-    { userId: student!.id, courseId: course!.id, level: "subtopic", refId: hearsay!.id, mastery: 0.4, confidence: 0.5, coverage: 0.6 },
-    { userId: student!.id, courseId: course!.id, level: "issue", refId: pse!.id, mastery: 0.35, confidence: 0.45, coverage: 0.5 },
+    {
+      userId: student!.id,
+      courseId: course!.id,
+      level: "overall",
+      mastery: 0.58,
+      confidence: 0.6,
+      coverage: 0.7,
+      recency: 0.8,
+      readiness: 0.55,
+    },
+    {
+      userId: student!.id,
+      courseId: course!.id,
+      level: "subject",
+      refId: evidence!.id,
+      mastery: 0.5,
+      confidence: 0.6,
+      coverage: 0.65,
+    },
+    {
+      userId: student!.id,
+      courseId: course!.id,
+      level: "subtopic",
+      refId: hearsay!.id,
+      mastery: 0.4,
+      confidence: 0.5,
+      coverage: 0.6,
+    },
+    {
+      userId: student!.id,
+      courseId: course!.id,
+      level: "issue",
+      refId: pse!.id,
+      mastery: 0.35,
+      confidence: 0.45,
+      coverage: 0.5,
+    },
   ]);
 
   // --- Learning events ---
   await db.insert(schema.learningEvents).values([
-    { userId: student!.id, type: "diagnostic_completed", payload: { examAttemptId: examAttempt!.id } },
-    { userId: student!.id, type: "question_answered", payload: { itemId: item!.id, correct: false } },
-    { userId: student!.id, type: "essay_submitted", payload: { submissionId: submission!.id } },
+    {
+      userId: student!.id,
+      type: "diagnostic_completed",
+      payload: { examAttemptId: examAttempt!.id },
+    },
+    {
+      userId: student!.id,
+      type: "question_answered",
+      payload: { itemId: item!.id, correct: false },
+    },
+    {
+      userId: student!.id,
+      type: "essay_submitted",
+      payload: { submissionId: submission!.id },
+    },
   ]);
 
   // --- Today's assignment (the daily contract) ---
@@ -379,9 +562,33 @@ export async function seed(db: AnyDb) {
     .returning();
 
   await db.insert(schema.assignmentItems).values([
-    { assignmentId: assignment!.id, kind: "spaced_review", refType: "flashcard", refId: card!.id, reason: "Due review", estMinutes: 10, sortOrder: 1 },
-    { assignmentId: assignment!.id, kind: "remediation", refType: "issue", refId: pse!.id, reason: "Weak issue: present sense impression", estMinutes: 25, sortOrder: 2 },
-    { assignmentId: assignment!.id, kind: "essay_practice", refType: "essay_prompt", refId: prompt!.id, reason: "Build issue-spotting", estMinutes: 40, sortOrder: 3 },
+    {
+      assignmentId: assignment!.id,
+      kind: "spaced_review",
+      refType: "flashcard",
+      refId: card!.id,
+      reason: "Due review",
+      estMinutes: 10,
+      sortOrder: 1,
+    },
+    {
+      assignmentId: assignment!.id,
+      kind: "remediation",
+      refType: "issue",
+      refId: pse!.id,
+      reason: "Weak issue: present sense impression",
+      estMinutes: 25,
+      sortOrder: 2,
+    },
+    {
+      assignmentId: assignment!.id,
+      kind: "essay_practice",
+      refType: "essay_prompt",
+      refId: prompt!.id,
+      reason: "Build issue-spotting",
+      estMinutes: 40,
+      sortOrder: 3,
+    },
   ]);
 
   // --- Audit log: record the content-clearing transition ---

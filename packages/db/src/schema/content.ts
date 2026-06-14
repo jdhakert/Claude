@@ -109,7 +109,9 @@ export const answerChoices = pgTable(
     rationale: text("rationale"), // why this choice is right/wrong
     sortOrder: integer("sort_order").notNull().default(0),
   },
-  (t) => [uniqueIndex("answer_choices_item_label_unique").on(t.itemId, t.label)],
+  (t) => [
+    uniqueIndex("answer_choices_item_label_unique").on(t.itemId, t.label),
+  ],
 );
 
 /** Full explanation for an item (1:1). */
