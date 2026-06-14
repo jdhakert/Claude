@@ -9,6 +9,7 @@ import { Dashboard } from "./routes/Dashboard";
 import { Courses } from "./routes/Courses";
 import { Course } from "./routes/Course";
 import { Lesson } from "./routes/Lesson";
+import { Practice } from "./routes/Practice";
 import { ContentAdmin } from "./routes/admin/ContentAdmin";
 import { NotFound } from "./routes/NotFound";
 
@@ -68,6 +69,14 @@ export function App() {
         element={
           <Protected>
             <Lesson />
+          </Protected>
+        }
+      />
+      <Route
+        path="/practice"
+        element={
+          <Protected>
+            <Practice />
           </Protected>
         }
       />

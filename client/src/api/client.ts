@@ -1,10 +1,14 @@
 import { env } from "../env";
 import type {
+  AttemptReview,
   AuthUser,
+  Confidence,
   CourseSummary,
   CourseTree,
   DashboardData,
   LessonView,
+  PracticeItem,
+  PracticeSubject,
 } from "./types";
 
 export class ApiError extends Error {
@@ -94,5 +98,52 @@ export const api = {
     apiFetch<{ block: { id: string } }>(`/admin/lessons/${lessonId}/blocks`, {
       method: "POST",
       body: JSON.stringify({ kind, body }),
+    }),
+
+  // --- Practice ---
+  practiceTaxonomy: (courseId: string) =>
+    apiFetch<{ subjects: PracticeSubject[] }>(
+      `/practice/taxonomy?courseId=${courseId}`,
+    ),
+  practiceItems: (params: {
+    courseId: string;
+    subjectId?: string;
+    subtopicId?: string;
+    mixed?: boolean;
+    limit?: number;
+  }) => {
+    const q = new URLSearchParams({ courseId: params.courseId });
+    if (params.subjectId) q.set("subjectId", params.subjectId);
+    if (params.subtopicId) q.set("subtopicId", params.subtopicId);
+    if (params.mixed) q.set("mixed", "true");
+    if (params.limit) q.set("limit", String(params.limit));
+    return apiFetch<{ items: PracticeItem[] }>(
+      `/practice/items?${q.toString()}`,
+    );
+  },
+  submitAttempt: (input: {
+    itemId: string;
+    selectedChoiceId: string;
+    confidence: Confidence;
+    timeMs: number;
+    mode: "tutor" | "timed";
+  }) =>
+    apiFetch<AttemptReview>("/practice/attempts", {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  addErrorJournal: (input: {
+    questionAttemptId: string;
+    cause: string;
+    note?: string;
+  }) =>
+    apiFetch<{ entry: { id: string } }>("/error-journal", {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  createFlashcard: (input: { front: string; back: string }) =>
+    apiFetch<{ flashcard: { id: string } }>("/flashcards", {
+      method: "POST",
+      body: JSON.stringify(input),
     }),
 };

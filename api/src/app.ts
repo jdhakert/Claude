@@ -11,6 +11,8 @@ import { adminRoutes } from "./routes/admin.js";
 import { dashboardRoutes } from "./routes/dashboard.js";
 import { courseRoutes } from "./routes/courses.js";
 import { authoringRoutes } from "./routes/authoring.js";
+import { practiceRoutes } from "./routes/practice.js";
+import { itemsAdminRoutes } from "./routes/itemsAdmin.js";
 import { ensureBaseRoles } from "./services/roles.js";
 
 export interface BuildAppOptions {
@@ -59,6 +61,8 @@ export async function buildApp(
     await app.register(dashboardRoutes);
     await app.register(courseRoutes);
     await app.register(authoringRoutes);
+    await app.register(practiceRoutes);
+    await app.register(itemsAdminRoutes);
   } else {
     app.log?.warn("No database configured — running health-only.");
   }

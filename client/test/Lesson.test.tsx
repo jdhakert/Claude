@@ -63,7 +63,7 @@ describe("Lesson page", () => {
       expect(screen.getByText("Hearsay Basics")).toBeInTheDocument(),
     );
     expect(screen.getByText("Hearsay is...")).toBeInTheDocument();
-    expect(startMock).toHaveBeenCalled();
+    await waitFor(() => expect(startMock).toHaveBeenCalled());
   });
 
   it("completes the lesson, sending time spent", async () => {

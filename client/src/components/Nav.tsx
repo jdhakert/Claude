@@ -3,8 +3,8 @@ import { NavLink } from "react-router-dom";
 const ITEMS = [
   { to: "/dashboard", label: "Today", icon: "📅", end: true },
   { to: "/courses", label: "Courses", icon: "📚" },
+  { to: "/practice", label: "Practice", icon: "✍️" },
   { to: "/dashboard/progress", label: "Progress", icon: "📊", soon: true },
-  { to: "/dashboard/review", label: "Review", icon: "🔁", soon: true },
 ];
 
 /** Primary navigation: a sidebar on desktop, a bottom bar on mobile (CSS). */

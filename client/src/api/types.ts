@@ -100,3 +100,36 @@ export interface LessonView {
     completedAt: string | null;
   };
 }
+
+export interface PracticeSubject {
+  id: string;
+  name: string;
+  subtopics: Array<{ id: string; name: string }>;
+}
+
+export interface PracticeItem {
+  id: string;
+  stem: string;
+  subject: string;
+  subtopic: string;
+  choices: Array<{ id: string; label: string; body: string }>;
+}
+
+export type Confidence = "guessing" | "low" | "medium" | "high";
+
+export interface AttemptReview {
+  attemptId: string;
+  isCorrect: boolean;
+  correctChoiceId: string | null;
+  confidence: Confidence;
+  issue: { id: string; name: string } | null;
+  ruleTakeaway: string | null;
+  explanation: string | null;
+  choices: Array<{
+    id: string;
+    label: string;
+    body: string;
+    isCorrect: boolean;
+    rationale: string | null;
+  }>;
+}
