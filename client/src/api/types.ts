@@ -211,3 +211,54 @@ export interface ExamResults {
     }>;
   }>;
 }
+
+export interface EssayPromptSummary {
+  id: string;
+  prompt: string;
+  timeLimitMinutes: number;
+  subjectId: string | null;
+}
+export interface EssayRubricCriterion {
+  id: string;
+  dimension: string;
+  description: string | null;
+  maxScore: number;
+}
+export interface EssayPromptDetail {
+  id: string;
+  prompt: string;
+  timeLimitMinutes: number;
+  rubric: EssayRubricCriterion[];
+}
+export interface EssaySubmitResult {
+  submissionId: string;
+  modelAnswer: string | null;
+  issueChecklist: Array<{ id: string; name: string }>;
+  rubric: EssayRubricCriterion[];
+}
+export interface EssaySubmission {
+  id: string;
+  userId: string;
+  essayPromptId: string;
+  responseText: string;
+  timeSpentSeconds: number | null;
+  status: string;
+  feedback: string | null;
+  gradedAt: string | null;
+  graderMeta: Record<string, unknown>;
+  selfScores: Array<{ dimension: string; score: number }>;
+  graderScores: Array<{
+    dimension: string;
+    score: number;
+    notes: string | null;
+  }>;
+}
+export interface EssayAnalytics {
+  dimensions: Array<{ dimension: string; average: number | null }>;
+  trend: Array<{
+    submissionId: string;
+    submittedAt: string | null;
+    overall: number | null;
+    timeSpentSeconds: number | null;
+  }>;
+}

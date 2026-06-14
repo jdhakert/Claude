@@ -689,3 +689,50 @@ code {
   padding-top: 0.75rem;
   margin-top: 0.75rem;
 }
+
+/* ---------- Essays ---------- */
+.essay-writer__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.exam-timer--low {
+  background: #fdeacc;
+  color: var(--warn);
+}
+.essay-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  font: inherit;
+  resize: vertical;
+}
+.essay-answer {
+  white-space: pre-wrap;
+}
+.rubric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.3rem 0;
+  text-transform: capitalize;
+}
+.rubric-row select {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+}
+.grade-field {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.5rem 0;
+}
+.grade-field textarea,
+.grade-field input {
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  font: inherit;
+}

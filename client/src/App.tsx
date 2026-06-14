@@ -13,6 +13,9 @@ import { Practice } from "./routes/Practice";
 import { Exams } from "./routes/exam/Exams";
 import { ExamRunner } from "./routes/exam/ExamRunner";
 import { ExamResults } from "./routes/exam/ExamResults";
+import { Essays } from "./routes/essay/Essays";
+import { EssayWriter } from "./routes/essay/EssayWriter";
+import { GraderQueue } from "./routes/essay/GraderQueue";
 import { ContentAdmin } from "./routes/admin/ContentAdmin";
 import { NotFound } from "./routes/NotFound";
 
@@ -104,6 +107,30 @@ export function App() {
         element={
           <Protected>
             <ExamResults />
+          </Protected>
+        }
+      />
+      <Route
+        path="/essays"
+        element={
+          <Protected>
+            <Essays />
+          </Protected>
+        }
+      />
+      <Route
+        path="/essays/:essayId"
+        element={
+          <Protected>
+            <EssayWriter />
+          </Protected>
+        }
+      />
+      <Route
+        path="/grader/essays"
+        element={
+          <Protected roles={["grader", "instructor", "admin"]}>
+            <GraderQueue />
           </Protected>
         }
       />

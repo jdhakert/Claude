@@ -6,6 +6,11 @@ import type {
   CourseSummary,
   CourseTree,
   DashboardData,
+  EssayAnalytics,
+  EssayPromptDetail,
+  EssayPromptSummary,
+  EssaySubmission,
+  EssaySubmitResult,
   ExamResults,
   ExamState,
   ExamSummary,
@@ -202,4 +207,51 @@ export const api = {
     }),
   examResults: (attemptId: string) =>
     apiFetch<ExamResults>(`/exam-attempts/${attemptId}/results`),
+
+  // --- Essays ---
+  essays: (courseId: string) =>
+    apiFetch<{ prompts: EssayPromptSummary[] }>(`/essays?courseId=${courseId}`),
+  essay: (id: string) => apiFetch<EssayPromptDetail>(`/essays/${id}`),
+  essayAnalytics: () => apiFetch<EssayAnalytics>("/essays/analytics"),
+  submitEssay: (
+    id: string,
+    input: { responseText: string; timeSpentSeconds: number },
+  ) =>
+    apiFetch<EssaySubmitResult>(`/essays/${id}/submissions`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  selfAssessEssay: (
+    submissionId: string,
+    input: {
+      scores: Array<{ dimension: string; score: number }>;
+      spottedIssueIds: string[];
+    },
+  ) =>
+    apiFetch<{ missedIssueIds: string[] }>(
+      `/essay-submissions/${submissionId}/self-assessment`,
+      { method: "POST", body: JSON.stringify(input) },
+    ),
+  graderQueue: () =>
+    apiFetch<{
+      submissions: Array<{
+        id: string;
+        submittedAt: string | null;
+        gradedAt: string | null;
+      }>;
+    }>("/grader/essay-submissions"),
+  graderSubmission: (id: string) =>
+    apiFetch<{ submission: EssaySubmission }>(`/essay-submissions/${id}`),
+  gradeEssay: (
+    id: string,
+    input: {
+      scores: Array<{ dimension: string; score: number; notes?: string }>;
+      comment?: string;
+      ruleWeaknesses?: string[];
+    },
+  ) =>
+    apiFetch<{ submission: EssaySubmission }>(
+      `/grader/essay-submissions/${id}/grade`,
+      { method: "POST", body: JSON.stringify(input) },
+    ),
 };

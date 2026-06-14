@@ -149,6 +149,14 @@ export const essaySubmissions = pgTable("essay_submissions", {
   timeSpentSeconds: integer("time_spent_seconds"),
   status: attemptStatusEnum("status").notNull().default("in_progress"),
   submittedAt: timestamp("submitted_at", { withTimezone: true }),
+  // Grader workflow fields.
+  graderId: uuid("grader_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  gradedAt: timestamp("graded_at", { withTimezone: true }),
+  feedback: text("feedback"),
+  // Missed issues, rule weaknesses, spotted-issue reconciliation, AI metadata.
+  graderMeta: jsonb("grader_meta").$type<Record<string, unknown>>(),
   ...timestamps,
 });
 
