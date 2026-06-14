@@ -1,10 +1,18 @@
 import { NavLink } from "react-router-dom";
 
-const ITEMS = [
+interface NavItem {
+  to: string;
+  label: string;
+  icon: string;
+  end?: boolean;
+  soon?: boolean;
+}
+
+const ITEMS: NavItem[] = [
   { to: "/dashboard", label: "Today", icon: "📅", end: true },
   { to: "/courses", label: "Courses", icon: "📚" },
   { to: "/practice", label: "Practice", icon: "✍️" },
-  { to: "/dashboard/progress", label: "Progress", icon: "📊", soon: true },
+  { to: "/exams", label: "Exams", icon: "📝" },
 ];
 
 /** Primary navigation: a sidebar on desktop, a bottom bar on mobile (CSS). */

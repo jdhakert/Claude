@@ -133,3 +133,81 @@ export interface AttemptReview {
     rationale: string | null;
   }>;
 }
+
+export interface ExamSummary {
+  id: string;
+  kind: string;
+  title: string;
+}
+
+export interface ExamSectionState {
+  attemptSectionId: string;
+  examSectionId: string;
+  kind: string;
+  title: string;
+  status: "pending" | "in_progress" | "paused" | "submitted" | "expired";
+  timeLimitMinutes: number;
+  endsAt: string | null;
+  remainingMs: number | null;
+  items: Array<{
+    attemptItemId: string;
+    itemId: string;
+    position: number;
+    stem: string;
+    selectedChoiceId: string | null;
+    flagged: boolean;
+    choices: Array<{ id: string; label: string; body: string }>;
+  }>;
+}
+
+export interface ExamState {
+  attempt: {
+    id: string;
+    status: string;
+    examTitle: string;
+    examKind: string;
+    allowPause: boolean;
+  };
+  sections: ExamSectionState[];
+}
+
+export interface ExamResults {
+  attempt: {
+    id: string;
+    examTitle: string;
+    examKind: string;
+    status: string;
+    rawScorePct: number | null;
+    pacing: {
+      totalQuestions: number;
+      answered: number;
+      unanswered: number;
+      changedAnswers: number;
+      flaggedCount: number;
+      avgSecondsPerItem: number;
+    } | null;
+    completedAt: string | null;
+  };
+  sectionResults: Array<{
+    examSectionId: string;
+    kind: string;
+    title: string;
+    total: number;
+    correct: number;
+    scorePct: number | null;
+  }>;
+  review: Array<{
+    itemId: string;
+    stem: string;
+    isCorrect: boolean | null;
+    flagged: boolean;
+    selectedChoiceId: string | null;
+    choices: Array<{
+      id: string;
+      label: string;
+      body: string;
+      isCorrect: boolean;
+      rationale: string | null;
+    }>;
+  }>;
+}

@@ -15,6 +15,7 @@ import {
   confidenceLevelEnum,
   examKindEnum,
   examSectionKindEnum,
+  examSectionStatusEnum,
   practiceModeEnum,
 } from "./enums";
 import { users } from "./identity";
@@ -190,3 +191,66 @@ export const ptSubmissions = pgTable("pt_submissions", {
   submittedAt: timestamp("submitted_at", { withTimezone: true }),
   ...timestamps,
 });
+
+/**
+ * Per-attempt section state (timing/resume/pauses). `endsAt` is computed when a
+ * section starts; the server enforces auto-submit once now > endsAt.
+ */
+export const examAttemptSections = pgTable(
+  "exam_attempt_sections",
+  {
+    id: pk(),
+    examAttemptId: uuid("exam_attempt_id")
+      .notNull()
+      .references(() => examAttempts.id, { onDelete: "cascade" }),
+    examSectionId: uuid("exam_section_id")
+      .notNull()
+      .references(() => examSections.id, { onDelete: "cascade" }),
+    status: examSectionStatusEnum("status").notNull().default("pending"),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    endsAt: timestamp("ends_at", { withTimezone: true }),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }),
+    pausedAt: timestamp("paused_at", { withTimezone: true }),
+    pausedMs: integer("paused_ms").notNull().default(0),
+    sortOrder: integer("sort_order").notNull().default(0),
+  },
+  (t) => [
+    uniqueIndex("exam_attempt_sections_unique").on(
+      t.examAttemptId,
+      t.examSectionId,
+    ),
+  ],
+);
+
+/**
+ * Per-attempt working answer sheet for MC sections. Supports resume (working
+ * answers persist), pacing analytics (time, changes, flags), and grading.
+ */
+export const examAttemptItems = pgTable(
+  "exam_attempt_items",
+  {
+    id: pk(),
+    examAttemptId: uuid("exam_attempt_id")
+      .notNull()
+      .references(() => examAttempts.id, { onDelete: "cascade" }),
+    examSectionId: uuid("exam_section_id")
+      .notNull()
+      .references(() => examSections.id, { onDelete: "cascade" }),
+    itemId: uuid("item_id")
+      .notNull()
+      .references(() => items.id, { onDelete: "restrict" }),
+    position: integer("position").notNull().default(0),
+    selectedChoiceId: uuid("selected_choice_id").references(
+      () => answerChoices.id,
+      { onDelete: "set null" },
+    ),
+    isCorrect: boolean("is_correct"),
+    changeCount: integer("change_count").notNull().default(0),
+    flagged: boolean("flagged").notNull().default(false),
+    timeMs: integer("time_ms").notNull().default(0),
+    answeredAt: timestamp("answered_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("exam_attempt_items_unique").on(t.examAttemptId, t.itemId),
+  ],
+);

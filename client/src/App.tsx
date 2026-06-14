@@ -10,6 +10,9 @@ import { Courses } from "./routes/Courses";
 import { Course } from "./routes/Course";
 import { Lesson } from "./routes/Lesson";
 import { Practice } from "./routes/Practice";
+import { Exams } from "./routes/exam/Exams";
+import { ExamRunner } from "./routes/exam/ExamRunner";
+import { ExamResults } from "./routes/exam/ExamResults";
 import { ContentAdmin } from "./routes/admin/ContentAdmin";
 import { NotFound } from "./routes/NotFound";
 
@@ -77,6 +80,30 @@ export function App() {
         element={
           <Protected>
             <Practice />
+          </Protected>
+        }
+      />
+      <Route
+        path="/exams"
+        element={
+          <Protected>
+            <Exams />
+          </Protected>
+        }
+      />
+      <Route
+        path="/exam-attempts/:attemptId"
+        element={
+          <Protected>
+            <ExamRunner />
+          </Protected>
+        }
+      />
+      <Route
+        path="/exam-attempts/:attemptId/results"
+        element={
+          <Protected>
+            <ExamResults />
           </Protected>
         }
       />

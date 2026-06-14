@@ -29,7 +29,7 @@ describe("migrations + seed", () => {
     expect(courses[0]!.type).toBe("ube");
 
     const items = await db.select().from(schema.items);
-    expect(items).toHaveLength(1);
+    expect(items.length).toBeGreaterThanOrEqual(1);
 
     const prompts = await db.select().from(schema.essayPrompts);
     expect(prompts).toHaveLength(1);

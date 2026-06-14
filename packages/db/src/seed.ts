@@ -276,6 +276,68 @@ export async function seed(db: AnyDb) {
     { itemId: item!.id, issueId: hearsayDef!.id },
   ]);
 
+  // Two more original, cleared MBE items so exams have multiple questions.
+  const extraItems = await db
+    .insert(schema.items)
+    .values([
+      {
+        subtopicId: hearsay!.id,
+        primaryIssueId: hearsayDef!.id,
+        stem: "A letter written by an absent witness is offered to prove the facts it asserts. The best objection is:",
+        difficulty: 0.4,
+        ...lic,
+      },
+      {
+        subtopicId: hearsay!.id,
+        primaryIssueId: hearsayDef!.id,
+        stem: "Testimony repeating what a party's own agent said, offered against that party, is best characterized as:",
+        difficulty: 0.5,
+        ...lic,
+      },
+    ])
+    .returning();
+
+  for (const extra of extraItems) {
+    await db.insert(schema.answerChoices).values([
+      {
+        itemId: extra.id,
+        label: "A",
+        body: "Hearsay",
+        isCorrect: true,
+        rationale: "Out-of-court statement offered for its truth.",
+        sortOrder: 1,
+      },
+      {
+        itemId: extra.id,
+        label: "B",
+        body: "Relevant non-hearsay",
+        isCorrect: false,
+        rationale: "It is offered for its truth, so it is hearsay.",
+        sortOrder: 2,
+      },
+      {
+        itemId: extra.id,
+        label: "C",
+        body: "Privileged",
+        isCorrect: false,
+        rationale: "No privilege is implicated.",
+        sortOrder: 3,
+      },
+      {
+        itemId: extra.id,
+        label: "D",
+        body: "Authentication failure",
+        isCorrect: false,
+        rationale: "Authentication is a separate issue.",
+        sortOrder: 4,
+      },
+    ]);
+    await db.insert(schema.explanations).values({
+      itemId: extra.id,
+      body: "The statement is offered to prove the truth of what it asserts, so the hearsay objection applies. (Original practice item.)",
+    });
+  }
+
   // --- Flashcard + SRS review ---
   const [card] = await db
     .insert(schema.flashcards)
@@ -539,6 +601,15 @@ export async function seed(db: AnyDb) {
       itemCount: 2,
       timeLimitMinutes: 180,
       sortOrder: 3,
+    },
+    // A short MBE section on the diagnostic so it is takeable end-to-end.
+    {
+      examId: diagnostic!.id,
+      kind: "mbe",
+      title: "Diagnostic — MBE",
+      itemCount: 10,
+      timeLimitMinutes: 18,
+      sortOrder: 1,
     },
   ]);
 

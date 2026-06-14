@@ -36,6 +36,15 @@ export function registerErrorHandler(app: FastifyInstance): void {
       return;
     }
 
+    // Honor framework client-errors (e.g. malformed/empty body) as 4xx, not 500.
+    const fe = error as { statusCode?: number; code?: string };
+    if (fe.statusCode && fe.statusCode >= 400 && fe.statusCode < 500) {
+      reply.status(fe.statusCode).send({
+        error: { code: fe.code ?? "bad_request", message: "Invalid request." },
+      });
+      return;
+    }
+
     request.log.error({ err: error }, "unhandled error");
     const isProd = process.env.NODE_ENV === "production";
     reply.status(500).send({

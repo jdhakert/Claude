@@ -97,6 +97,14 @@ export const attemptStatusEnum = pgEnum("attempt_status", [
   "expired",
 ]);
 
+export const examSectionStatusEnum = pgEnum("exam_section_status", [
+  "pending",
+  "in_progress",
+  "paused",
+  "submitted",
+  "expired",
+]);
+
 export const practiceModeEnum = pgEnum("practice_mode", [
   "tutor",
   "timed",

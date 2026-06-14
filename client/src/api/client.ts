@@ -6,6 +6,9 @@ import type {
   CourseSummary,
   CourseTree,
   DashboardData,
+  ExamResults,
+  ExamState,
+  ExamSummary,
   LessonView,
   PracticeItem,
   PracticeSubject,
@@ -22,10 +25,16 @@ export class ApiError extends Error {
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  // Only send a JSON content-type when there's a body — Fastify rejects an
+  // empty JSON body, which would break bodyless POSTs (enroll, start, etc.).
+  const headers: Record<string, string> = {
+    ...(init?.headers as Record<string, string>),
+  };
+  if (init?.body != null) headers["content-type"] = "application/json";
   const res = await fetch(`${env.apiBaseUrl}${path}`, {
     credentials: "include",
-    headers: { "content-type": "application/json" },
     ...init,
+    headers,
   });
   if (!res.ok) {
     let code = "error";
@@ -146,4 +155,51 @@ export const api = {
       method: "POST",
       body: JSON.stringify(input),
     }),
+
+  // --- Exams ---
+  exams: (courseId: string) =>
+    apiFetch<{ exams: ExamSummary[] }>(`/exams?courseId=${courseId}`),
+  startExam: (examId: string) =>
+    apiFetch<ExamState>(`/exams/${examId}/attempts`, { method: "POST" }),
+  examState: (attemptId: string) =>
+    apiFetch<ExamState>(`/exam-attempts/${attemptId}`),
+  startExamSection: (attemptId: string, examSectionId: string) =>
+    apiFetch<ExamState>(`/exam-attempts/${attemptId}/sections/start`, {
+      method: "POST",
+      body: JSON.stringify({ examSectionId }),
+    }),
+  submitExamSection: (attemptId: string, examSectionId: string) =>
+    apiFetch<ExamState>(`/exam-attempts/${attemptId}/sections/submit`, {
+      method: "POST",
+      body: JSON.stringify({ examSectionId }),
+    }),
+  pauseExamSection: (attemptId: string, examSectionId: string) =>
+    apiFetch<ExamState>(`/exam-attempts/${attemptId}/sections/pause`, {
+      method: "POST",
+      body: JSON.stringify({ examSectionId }),
+    }),
+  resumeExamSection: (attemptId: string, examSectionId: string) =>
+    apiFetch<ExamState>(`/exam-attempts/${attemptId}/sections/resume`, {
+      method: "POST",
+      body: JSON.stringify({ examSectionId }),
+    }),
+  answerExam: (
+    attemptId: string,
+    input: {
+      attemptItemId: string;
+      selectedChoiceId?: string;
+      flagged?: boolean;
+      timeMsDelta?: number;
+    },
+  ) =>
+    apiFetch<{ selectedChoiceId: string | null; flagged: boolean }>(
+      `/exam-attempts/${attemptId}/answer`,
+      { method: "POST", body: JSON.stringify(input) },
+    ),
+  submitExam: (attemptId: string) =>
+    apiFetch<ExamResults>(`/exam-attempts/${attemptId}/submit`, {
+      method: "POST",
+    }),
+  examResults: (attemptId: string) =>
+    apiFetch<ExamResults>(`/exam-attempts/${attemptId}/results`),
 };
