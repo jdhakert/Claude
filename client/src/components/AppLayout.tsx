@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { Nav } from "./Nav";
+import { InstallPrompt } from "./InstallPrompt";
 
 function OfflineBanner() {
   const [online, setOnline] = useState(
@@ -51,6 +52,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <Nav />
         </aside>
         <main className="app-main" id="main" tabIndex={-1}>
+          <InstallPrompt />
           {children}
         </main>
       </div>

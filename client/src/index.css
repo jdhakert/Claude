@@ -96,6 +96,7 @@ code {
 /* ---------- App shell ---------- */
 .app-shell {
   min-height: 100vh;
+  min-height: 100dvh; /* avoid mobile URL-bar jump (progressive enhancement) */
   display: flex;
   flex-direction: column;
 }
@@ -105,6 +106,10 @@ code {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.75rem 1.25rem;
+  /* Respect the notch / status bar when installed (viewport-fit=cover). */
+  padding-top: calc(0.75rem + env(safe-area-inset-top));
+  padding-left: calc(1.25rem + env(safe-area-inset-left));
+  padding-right: calc(1.25rem + env(safe-area-inset-right));
   background: var(--brand);
   color: var(--brand-ink);
   position: sticky;
@@ -193,6 +198,8 @@ code {
     background: var(--surface);
     border-top: 1px solid var(--line);
     z-index: 10;
+    /* Keep the last row above the home indicator on gesture-nav phones. */
+    padding-bottom: env(safe-area-inset-bottom);
   }
   .app-bottomnav .nav ul {
     display: flex;
@@ -204,6 +211,14 @@ code {
     gap: 0.1rem;
     font-size: 0.7rem;
     padding: 0.45rem 0.3rem;
+    /* Comfortable thumb target across the full nav cell. */
+    min-height: 44px;
+    justify-content: center;
+    flex: 1;
+  }
+  /* Extra clearance so the fixed bottom nav never covers page content. */
+  .app-main {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
   }
 }
 
@@ -938,4 +953,90 @@ code {
 }
 #main:focus {
   outline: none;
+}
+
+/* ---------- Mobile / app-quality hardening (Phase 20) ---------- */
+/* Tap targets ≥44px and snappier touch feedback on interactive controls. */
+button,
+.cta,
+.link-btn,
+.nav__link,
+.tabs button,
+.pt-docs__tabs button {
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+/* Choice rows in practice/exam are primary touch targets — keep them roomy. */
+.question__choices label,
+.review__choices li,
+.exam-sections__item {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+/* 16px form fields prevent iOS Safari from auto-zooming on focus. */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+/* Generic callout used for the exam "desktop recommended" note. */
+.callout {
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  background: #eef4f1;
+  margin: 0 0 1rem;
+}
+.callout--warning {
+  background: #fdeacc;
+  color: #6b3b10;
+}
+
+/* Install-prompt banner (PWA). */
+.install-prompt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+.install-prompt__body p {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.install-prompt__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+.install-prompt__dismiss {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+/* Wide data tables scroll horizontally instead of breaking the layout. */
+@media (max-width: 600px) {
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  /* Stack rating buttons full-width for confident thumb taps. */
+  .rating-row button {
+    flex: 1 1 40%;
+  }
+  /* Headers can wrap rather than force horizontal scroll. */
+  .lesson__header,
+  .exam-section__bar,
+  .essay-writer__bar {
+    flex-wrap: wrap;
+  }
 }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../api/client";
 import { useAsync } from "../../hooks/useAsync";
 import { EmptyState, ErrorState, LoadingState } from "../../components/states";
+import { MobileExamNotice } from "../../components/MobileExamNotice";
 
 const KIND_LABEL: Record<string, string> = {
   diagnostic: "Diagnostic",
@@ -63,6 +64,7 @@ function ExamList({
   return (
     <div className="page">
       <h1>Exams</h1>
+      <MobileExamNotice />
       <RedFlagPanel />
       <ul className="course-grid">
         {data.exams.map((e) => (

@@ -19,6 +19,13 @@ export default defineConfig({
         orientation: "portrait",
         start_url: "/",
         scope: "/",
+        categories: ["education", "productivity"],
+        // App-like quick actions from a long-press of the installed icon.
+        shortcuts: [
+          { name: "Dashboard", url: "/dashboard" },
+          { name: "Practice", url: "/practice" },
+          { name: "Review", url: "/review" },
+        ],
         icons: [
           {
             src: "/icon.svg",
@@ -37,15 +44,38 @@ export default defineConfig({
       workbox: {
         // SPA: serve the cached app shell for navigations when offline.
         navigateFallback: "/index.html",
-        // Fall back to a friendly offline page if the shell is unavailable.
+        // Never serve the SPA shell for API/auth/health calls — those must hit
+        // the network (or fail) so we never cache a mutation or stale auth.
+        navigateFallbackDenylist: [/^\/api/, /^\/auth/, /^\/health/],
+        cleanupOutdatedCaches: true,
         offlineGoogleAnalytics: false,
         runtimeCaching: [
           {
+            // App shell / navigations: prefer fresh, fall back to cache offline.
             urlPattern: ({ request }) => request.destination === "document",
             handler: "NetworkFirst",
             options: {
               cacheName: "html-cache",
               networkTimeoutSeconds: 3,
+            },
+          },
+          {
+            // Static assets (scripts, styles, workers): fast + revalidate.
+            urlPattern: ({ request }) =>
+              request.destination === "script" ||
+              request.destination === "style" ||
+              request.destination === "worker",
+            handler: "StaleWhileRevalidate",
+            options: { cacheName: "asset-cache" },
+          },
+          {
+            // Fonts/images: cache-first with a bounded, expiring cache.
+            urlPattern: ({ request }) =>
+              request.destination === "image" || request.destination === "font",
+            handler: "CacheFirst",
+            options: {
+              cacheName: "media-cache",
+              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
         ],

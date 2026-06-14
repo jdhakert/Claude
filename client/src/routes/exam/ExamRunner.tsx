@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../api/client";
 import type { ExamSectionState, ExamState } from "../../api/types";
 import { ErrorState, LoadingState } from "../../components/states";
+import { MobileExamNotice } from "../../components/MobileExamNotice";
 
 function fmt(ms: number | null): string {
   if (ms == null) return "Untimed";
@@ -44,6 +45,7 @@ export function ExamRunner() {
   return (
     <div className="page exam-runner">
       <h1>{state.attempt.examTitle}</h1>
+      <MobileExamNotice />
       <ol className="exam-sections">
         {state.sections.map((s) => (
           <li
