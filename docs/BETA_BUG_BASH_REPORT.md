@@ -78,7 +78,8 @@ tests were green), reinforcing the value of the manual pass.
 | KI-3 | Low | Packaging | API runs live via `tsx` (consumes `@barready/db` as TS source); a compiled `node dist` start needs a bundling step. Documented in the README; does not affect beta dev/run. |
 
 No **critical** or **high** severity issues remain. There are **no known beta
-blockers**.
+blockers**. These and other deferred items are consolidated in
+[docs/POST_BETA_BACKLOG.md](POST_BETA_BACKLOG.md).
 
 ## Test suite
 - Full gate green: format, lint, typecheck, **build**, and tests.
