@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { api } from "../api/client";
 import type { DashboardData } from "../api/types";
 import { useAsync } from "../hooks/useAsync";
@@ -105,6 +106,9 @@ export function Dashboard() {
               </span>
               <p>{d.nextTask.reason}</p>
               <p className="muted">~{d.nextTask.estMinutes} min</p>
+              <Link className="cta" to="/remediation">
+                Start smart remediation
+              </Link>
             </div>
           ) : (
             <EmptyState title="No recommendation yet." />

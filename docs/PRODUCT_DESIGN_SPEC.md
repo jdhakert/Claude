@@ -423,3 +423,36 @@ cycle plus its required surfaces, which is realistic for a pilot.
       (§9, §17).
 - [x] Tracks progress at **subject, subtopic, issue, question, exam, and
       time-management** levels (§2).
+
+---
+
+## 23. Shipped differentiators (beta build status)
+
+Beyond the catalog above, the beta build implements these differentiated,
+data-driven features end-to-end (all use real student data; none are cosmetic):
+
+| Feature | Status | Where it lives | Improves |
+| --- | --- | --- | --- |
+| Daily Contract / adaptive plan (D1) | ✅ shipped | Dashboard, `/plan` | recommendations |
+| "Why I missed it" error journal (D3) | ✅ shipped | Practice review, `/error-journal` | review |
+| Confidence calibration (D4) | ✅ shipped | Analytics (`/analytics/me`) | review + readiness |
+| Honest readiness (D6) | ✅ shipped | progress engine | readiness |
+| Verified remediation loop (D9) | ✅ shipped | adaptive engine | recommendations |
+| Minimum-effective-dose (D10) | ✅ shipped | adaptive packer | recommendations |
+| Black-Letter Engine / rule drills (D5) | ✅ shipped | Review › Rule drills | retention |
+| Attack outline builder (D7) | ✅ shipped | Review › Attack outlines | review |
+| **Wrong Answer Pattern Detector** | ✅ shipped | Review › Error patterns, `/insights/patterns` | review |
+| **Smart Remediation Sets** | ✅ shipped | `/remediation`, `/remediation/set` | recommendations |
+| **Red Flag Review** (pre-exam) | ✅ shipped | Exams page, `/insights/red-flags` | exam prep |
+| Instructor/admin analytics | ✅ shipped | `/admin/analytics`, AdminAnalytics | content + at-risk |
+
+The last three (Phase 16) are new this build:
+
+- **Wrong Answer Pattern Detector** — aggregates the error journal into a
+  dominant error pattern ("48% of your misses = misread facts") and surfaces the
+  distractors the student gravitates toward, so review targets *how* they fail.
+- **Smart Remediation Sets** — assembles a targeted, license-cleared practice set
+  drawn from the student's weakest issues; the adaptive plan's remediation blocks
+  link to it, giving recommendations real content.
+- **Red Flag Review** — a pre-full-length briefing listing the student's weak +
+  overconfident issues and outstanding reviews, so they don't sit cold.

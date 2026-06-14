@@ -873,3 +873,12 @@ code {
 .data-table .cap {
   text-transform: capitalize;
 }
+
+/* ---------- Red flag review ---------- */
+.red-flags {
+  border-left: 4px solid var(--warn);
+  background: #fdeacc;
+}
+.red-flags h2 {
+  color: var(--warn);
+}

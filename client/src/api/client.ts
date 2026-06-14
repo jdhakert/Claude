@@ -29,6 +29,9 @@ import type {
   AdminStudent,
   CohortOverview,
   ContentPerformance,
+  WrongAnswerPatterns,
+  RedFlags,
+  RemediationSet,
 } from "./types";
 
 export class ApiError extends Error {
@@ -327,6 +330,15 @@ export const api = {
     apiFetch<{ outline: AttackOutline; entries: AttackOutlineEntry[] }>(
       `/outlines/${id}`,
     ),
+  // --- Creative features ---
+  wrongAnswerPatterns: () =>
+    apiFetch<WrongAnswerPatterns>("/insights/patterns"),
+  redFlags: () => apiFetch<RedFlags>("/insights/red-flags"),
+  remediationSet: (issueId?: string) =>
+    apiFetch<RemediationSet>(
+      `/remediation/set${issueId ? `?issueId=${issueId}` : ""}`,
+    ),
+
   // --- Analytics ---
   myAnalytics: () => apiFetch<StudentAnalytics>("/analytics/me"),
   adminStudents: () =>

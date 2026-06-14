@@ -9,7 +9,7 @@ import type {
 import { useAsync } from "../hooks/useAsync";
 import { EmptyState, ErrorState, LoadingState } from "../components/states";
 
-type Tab = "cards" | "rules" | "outlines";
+type Tab = "cards" | "rules" | "outlines" | "patterns";
 
 export function Review() {
   const [tab, setTab] = useState<Tab>("cards");
@@ -41,10 +41,19 @@ export function Review() {
         >
           Attack outlines
         </button>
+        <button
+          role="tab"
+          aria-selected={tab === "patterns"}
+          className={tab === "patterns" ? "active" : ""}
+          onClick={() => setTab("patterns")}
+        >
+          Error patterns
+        </button>
       </div>
       {tab === "cards" && <DueCards />}
       {tab === "rules" && <RuleDrills />}
       {tab === "outlines" && <Outlines />}
+      {tab === "patterns" && <Patterns />}
     </div>
   );
 }
@@ -341,5 +350,69 @@ function OutlineEditor({ outlineId }: { outlineId: string }) {
         <button type="submit">Add entry</button>
       </form>
     </section>
+  );
+}
+
+function Patterns() {
+  const { status, data, error, reload } = useAsync(
+    () => api.wrongAnswerPatterns(),
+    [],
+  );
+  if (status === "loading") return <LoadingState />;
+  if (status === "error")
+    return <ErrorState message={error.message} onRetry={reload} />;
+  if (!data.totalMisses)
+    return (
+      <EmptyState
+        title="No error patterns yet."
+        hint="Tag why you miss questions to reveal your patterns."
+      />
+    );
+
+  return (
+    <div>
+      <section className="card">
+        <h2>Your #1 error pattern</h2>
+        <p className="review-card__front">{data.insight}</p>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Why you missed</th>
+              <th scope="col" className="num">
+                Count
+              </th>
+              <th scope="col" className="num">
+                Share
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.causeBreakdown.map((c) => (
+              <tr key={c.cause}>
+                <td className="cap">{c.label}</td>
+                <td className="num">{c.count}</td>
+                <td className="num">{Math.round(c.pct * 100)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      {data.confusions.length > 0 && (
+        <section className="card" aria-label="Distractor gravity">
+          <h2>Distractors you gravitate to</h2>
+          <ul className="lesson-list">
+            {data.confusions.map((c) => (
+              <li key={c.issueName}>
+                <span>
+                  <strong>{c.issueName}:</strong> {c.topPick ?? "—"}
+                </span>
+                <span className="muted">{c.pickCount}x</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
   );
 }

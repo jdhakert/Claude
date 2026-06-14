@@ -389,3 +389,34 @@ export interface ContentPerformance {
     missRate: number | null;
   }>;
 }
+
+export interface WrongAnswerPatterns {
+  totalMisses: number;
+  dominant: { cause: string; label: string; count: number; pct: number } | null;
+  causeBreakdown: Array<{
+    cause: string;
+    label: string;
+    count: number;
+    pct: number;
+  }>;
+  confusions: Array<{
+    issueName: string;
+    topPick: string | null;
+    pickCount: number;
+  }>;
+  insight: string;
+}
+export interface RedFlags {
+  weakIssues: Array<{ id: string; name: string; mastery: number | null }>;
+  overconfidentIssues: string[];
+  dueCount: number;
+  flags: string[];
+}
+export interface RemediationSet {
+  issues: Array<{ id: string; name: string }>;
+  items: Array<{
+    id: string;
+    stem: string;
+    choices: Array<{ id: string; label: string; body: string }>;
+  }>;
+}

@@ -63,6 +63,7 @@ function ExamList({
   return (
     <div className="page">
       <h1>Exams</h1>
+      <RedFlagPanel />
       <ul className="course-grid">
         {data.exams.map((e) => (
           <li key={e.id} className="card">
@@ -79,5 +80,23 @@ function ExamList({
         ))}
       </ul>
     </div>
+  );
+}
+
+function RedFlagPanel() {
+  const { status, data } = useAsync(() => api.redFlags(), []);
+  if (status !== "success" || data.flags.length === 0) return null;
+  return (
+    <section className="card red-flags" aria-label="Red flag review">
+      <h2>⚠ Red flag review — before you sit a full-length</h2>
+      <p className="muted">
+        Don't walk in cold. These are your highest-risk items right now.
+      </p>
+      <ul className="checklist-elements">
+        {data.flags.map((f, i) => (
+          <li key={i}>☐ {f}</li>
+        ))}
+      </ul>
+    </section>
   );
 }
