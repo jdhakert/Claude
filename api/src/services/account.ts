@@ -102,3 +102,64 @@ export async function updateNotifications(
     .where(eq(schema.profiles.userId, userId));
   return { notificationPrefs: prefs };
 }
+
+/** Full personal-data export (privacy / data portability). */
+export async function exportAccount(db: AppDb, userId: string) {
+  const account = await getAccount(db, userId);
+  if (!account) return null;
+  const [
+    questionAttempts,
+    essaySubmissions,
+    ptSubmissions,
+    errorJournal,
+    srsReviews,
+  ] = await Promise.all([
+    db
+      .select()
+      .from(schema.questionAttempts)
+      .where(eq(schema.questionAttempts.userId, userId)),
+    db
+      .select()
+      .from(schema.essaySubmissions)
+      .where(eq(schema.essaySubmissions.userId, userId)),
+    db
+      .select()
+      .from(schema.ptSubmissions)
+      .where(eq(schema.ptSubmissions.userId, userId)),
+    db
+      .select()
+      .from(schema.errorJournalEntries)
+      .where(eq(schema.errorJournalEntries.userId, userId)),
+    db
+      .select()
+      .from(schema.srsReviews)
+      .where(eq(schema.srsReviews.userId, userId)),
+  ]);
+  return {
+    exportedAt: new Date().toISOString(),
+    account,
+    performance: {
+      questionAttempts,
+      essaySubmissions,
+      ptSubmissions,
+      errorJournal,
+      srsReviews,
+    },
+  };
+}
+
+/** Permanently delete the account and all owned data (cascades). */
+export async function deleteAccount(db: AppDb, userId: string) {
+  const existing = (
+    await db
+      .select({ id: schema.users.id })
+      .from(schema.users)
+      .where(eq(schema.users.id, userId))
+      .limit(1)
+  )[0];
+  if (!existing) return false;
+  // Owned rows cascade on user delete (sessions, profile, enrollments,
+  // attempts, submissions, reviews, journal, assignments, subscriptions).
+  await db.delete(schema.users).where(eq(schema.users.id, userId));
+  return true;
+}

@@ -1,5 +1,6 @@
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
+import helmet from "@fastify/helmet";
 import Fastify, { type FastifyInstance } from "fastify";
 import type { AppDb } from "./db.js";
 import { loadEnv, type Env } from "./env.js";
@@ -30,6 +31,12 @@ export interface BuildAppOptions {
   env?: Env;
   /** Database is optional: without it the API runs health-only. */
   db?: AppDb;
+  /**
+   * Max auth attempts (login/signup) per IP per minute. Defaults to 20 in
+   * non-test environments and 0 (disabled) under test so suites can hammer
+   * login; a dedicated test passes a low value to exercise the limiter.
+   */
+  authRateLimitMax?: number;
 }
 
 /**
@@ -52,6 +59,10 @@ export async function buildApp(
     disableRequestLogging: env.NODE_ENV === "test",
   });
 
+  // Security headers (Charter §3). The API serves JSON, so CSP is unneeded;
+  // helmet still sets nosniff, frameguard, referrer-policy, HSTS, etc.
+  await app.register(helmet, { contentSecurityPolicy: false });
+
   // CORS with credentials so the browser PWA can send the session cookie
   // cross-origin (client :5173 → API :3000). Origins come from validated env.
   await app.register(cors, {
@@ -63,10 +74,13 @@ export async function buildApp(
   registerErrorHandler(app);
   await app.register(healthRoutes);
 
+  const authRateLimitMax =
+    opts.authRateLimitMax ?? (env.NODE_ENV === "test" ? 0 : 20);
+
   if (opts.db) {
     app.decorate("db", opts.db);
     await ensureBaseRoles(opts.db);
-    await app.register(authRoutes);
+    await app.register(authRoutes, { authRateLimitMax });
     await app.register(onboardingRoutes);
     await app.register(adminRoutes);
     await app.register(dashboardRoutes);

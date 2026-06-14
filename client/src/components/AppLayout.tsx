@@ -29,6 +29,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth();
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main">
+        Skip to main content
+      </a>
       <header className="app-header">
         <span className="app-header__brand">BarReady</span>
         {user && (
@@ -47,7 +50,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <aside className="app-sidebar">
           <Nav />
         </aside>
-        <main className="app-main" id="main">
+        <main className="app-main" id="main" tabIndex={-1}>
           {children}
         </main>
       </div>

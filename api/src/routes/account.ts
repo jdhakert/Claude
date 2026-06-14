@@ -3,6 +3,8 @@ import { z } from "zod";
 import { AppError } from "../errors.js";
 import { requireAuth } from "../auth/guards.js";
 import {
+  deleteAccount,
+  exportAccount,
   getAccount,
   updateNotifications,
   updateProfile,
@@ -40,6 +42,29 @@ export async function accountRoutes(app: FastifyInstance): Promise<void> {
       if (!parsed.success)
         throw new AppError(400, "bad_request", "Invalid preferences.");
       return updateNotifications(app.db, request.user!.id, parsed.data.prefs);
+    },
+  );
+
+  // Privacy: export all of my personal data.
+  app.get("/account/export", { preHandler: requireAuth }, async (request) => {
+    const data = await exportAccount(app.db, request.user!.id);
+    if (!data) throw new AppError(404, "not_found", "Account not found.");
+    return data;
+  });
+
+  // Privacy: permanently delete my account (requires explicit confirmation).
+  const DeleteSchema = z.object({ confirm: z.literal(true) });
+  app.delete(
+    "/account",
+    { preHandler: requireAuth },
+    async (request, reply) => {
+      const parsed = DeleteSchema.safeParse(request.body);
+      if (!parsed.success)
+        throw new AppError(400, "confirmation_required", "Confirm deletion.");
+      const ok = await deleteAccount(app.db, request.user!.id);
+      if (!ok) throw new AppError(404, "not_found", "Account not found.");
+      reply.clearCookie("br_session", { path: "/" });
+      return { deleted: true };
     },
   );
 }

@@ -10,6 +10,7 @@ import {
 } from "../auth/session.js";
 import { clearSessionCookie, setSessionCookie } from "../auth/cookies.js";
 import { requireAuth } from "../auth/guards.js";
+import { makeRateLimiter } from "../auth/rateLimit.js";
 import {
   assignRoleByKey,
   createUser,
@@ -21,8 +22,21 @@ const CredentialsSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
-export async function authRoutes(app: FastifyInstance): Promise<void> {
-  app.post("/auth/signup", async (request, reply) => {
+export interface AuthRouteOptions {
+  authRateLimitMax?: number;
+}
+
+export async function authRoutes(
+  app: FastifyInstance,
+  opts: AuthRouteOptions = {},
+): Promise<void> {
+  // Throttle brute-force on the credential endpoints (Charter §3).
+  const limiter = makeRateLimiter({
+    max: opts.authRateLimitMax ?? 0,
+    windowMs: 60_000,
+  });
+
+  app.post("/auth/signup", { preHandler: limiter }, async (request, reply) => {
     const parsed = CredentialsSchema.safeParse(request.body);
     if (!parsed.success) {
       throw new AppError(400, "bad_request", parsed.error.issues[0]!.message);
@@ -46,7 +60,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     return { user: { id: user.id, email: user.email, roles: ["student"] } };
   });
 
-  app.post("/auth/login", async (request, reply) => {
+  app.post("/auth/login", { preHandler: limiter }, async (request, reply) => {
     const parsed = CredentialsSchema.safeParse(request.body);
     if (!parsed.success) {
       throw new AppError(400, "bad_request", "Invalid credentials.");
