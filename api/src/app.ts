@@ -1,10 +1,18 @@
+import cookie from "@fastify/cookie";
 import Fastify, { type FastifyInstance } from "fastify";
+import type { AppDb } from "./db.js";
 import { loadEnv, type Env } from "./env.js";
 import { registerErrorHandler } from "./errors.js";
 import { healthRoutes } from "./routes/health.js";
+import { authRoutes } from "./routes/auth.js";
+import { onboardingRoutes } from "./routes/onboarding.js";
+import { adminRoutes } from "./routes/admin.js";
+import { ensureBaseRoles } from "./services/roles.js";
 
 export interface BuildAppOptions {
   env?: Env;
+  /** Database is optional: without it the API runs health-only. */
+  db?: AppDb;
 }
 
 /**
@@ -17,20 +25,30 @@ export async function buildApp(
   const env = opts.env ?? loadEnv();
 
   const app = Fastify({
-    // Structured logging baseline (pino under the hood). Silent in tests.
     logger:
       env.NODE_ENV === "test"
         ? false
         : {
             level: env.LOG_LEVEL,
-            // Never log secrets/PII (Charter §3).
             redact: ["req.headers.authorization", "req.headers.cookie"],
           },
     disableRequestLogging: env.NODE_ENV === "test",
   });
 
+  await app.register(cookie);
+  app.decorateRequest("user", null);
   registerErrorHandler(app);
   await app.register(healthRoutes);
+
+  if (opts.db) {
+    app.decorate("db", opts.db);
+    await ensureBaseRoles(opts.db);
+    await app.register(authRoutes);
+    await app.register(onboardingRoutes);
+    await app.register(adminRoutes);
+  } else {
+    app.log?.warn("No database configured — running health-only.");
+  }
 
   return app;
 }

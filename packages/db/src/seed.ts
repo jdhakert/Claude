@@ -14,8 +14,8 @@ import * as schema from "./schema/index";
 type AnyDb = PgDatabase<any, typeof schema, any>;
 
 export async function seed(db: AnyDb) {
-  // --- Roles ---
-  const roleRows = await db
+  // --- Roles (idempotent: server startup also ensures these) ---
+  await db
     .insert(schema.roles)
     .values([
       { key: "student", description: "Studies for the bar exam" },
@@ -25,7 +25,8 @@ export async function seed(db: AnyDb) {
       { key: "content_reviewer", description: "Reviews and clears content" },
       { key: "admin", description: "Administers the platform" },
     ])
-    .returning();
+    .onConflictDoNothing({ target: schema.roles.key });
+  const roleRows = await db.select().from(schema.roles);
   const roleByKey = Object.fromEntries(roleRows.map((r) => [r.key, r.id]));
 
   // --- Users (student + author + reviewer-as-admin) ---

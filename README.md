@@ -86,8 +86,12 @@ production build and the Playwright E2E suite.
 
 - **Build artifacts:** `pnpm build` produces `api/dist` (Node ESM) and
   `client/dist` (static PWA assets + service worker).
-- **API:** run `node api/dist/server.js` behind TLS; provide validated env
-  (`DATABASE_URL`, `PORT`, `LOG_LEVEL`, `CORS_ORIGINS`). Structured logs via pino.
+- **API:** provide validated env (`DATABASE_URL`, `PORT`, `LOG_LEVEL`,
+  `CORS_ORIGINS`) behind TLS; structured logs via pino. In dev/staging the API
+  runs via `tsx` (`pnpm dev:api`). _Packaging note:_ the workspace `@barready/db`
+  is consumed as TypeScript source, so a plain `node api/dist/server.js`
+  production artifact still needs workspace deps built/bundled (esbuild bundle or
+  a `db` build step) — tracked for the deploy phase in the roadmap.
 - **Client:** serve `client/dist` from a static host/CDN; it's an installable PWA.
 - **Migrations:** run `pnpm db:migrate` as a gated, forward-only deploy step.
 - **Environments:** local → staging → production with parity; immutable artifacts

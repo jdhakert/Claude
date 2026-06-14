@@ -1,9 +1,11 @@
+import { createDb } from "@barready/db";
 import { buildApp } from "./app.js";
 import { loadEnv } from "./env.js";
 
 async function main(): Promise<void> {
   const env = loadEnv();
-  const app = await buildApp({ env });
+  const db = env.DATABASE_URL ? createDb(env.DATABASE_URL) : undefined;
+  const app = await buildApp({ env, db });
 
   try {
     await app.listen({ port: env.PORT, host: env.HOST });
