@@ -973,24 +973,36 @@ export async function seedDemo(db: AnyDb) {
         coverage: 0.55,
       });
     }
-    // Subtopic-grain for the weakest subject's subtopics (drives drill-downs).
+    // Subtopic- and issue-grain so drill-downs AND "weakest issues" populate.
     for (const b of built) {
+      const base = profile.bySubject[b.subjectSlug] ?? profile.overall;
+      const subtopicMastery = Math.min(
+        0.95,
+        Math.max(0.1, base + (rand() - 0.5) * 0.2),
+      );
       rows.push({
         userId,
         courseId: course!.id,
         level: "subtopic",
         refId: b.subtopicId,
-        mastery: Math.min(
-          0.95,
-          Math.max(
-            0.1,
-            (profile.bySubject[b.subjectSlug] ?? profile.overall) +
-              (rand() - 0.5) * 0.2,
-          ),
-        ),
+        mastery: subtopicMastery,
         confidence: 0.5,
         coverage: 0.5,
       });
+      for (const issueId of b.issueIds) {
+        rows.push({
+          userId,
+          courseId: course!.id,
+          level: "issue",
+          refId: issueId,
+          mastery: Math.min(
+            0.95,
+            Math.max(0.08, subtopicMastery + (rand() - 0.5) * 0.25),
+          ),
+          confidence: 0.5,
+          coverage: 0.5,
+        });
+      }
     }
     await db.insert(schema.progressSnapshots).values(rows);
   }

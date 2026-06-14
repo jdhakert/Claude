@@ -967,9 +967,10 @@ button,
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-/* Choice rows in practice/exam are primary touch targets — keep them roomy. */
+/* Choice rows in practice/exam are primary touch targets — keep them roomy.
+   (Only the interactive inputs; the post-answer review list stays block flow
+   so its label/body/rationale stack readably.) */
 .question__choices label,
-.review__choices li,
 .exam-sections__item {
   min-height: 44px;
   display: flex;

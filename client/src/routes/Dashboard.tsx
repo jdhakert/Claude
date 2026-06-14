@@ -81,7 +81,9 @@ export function Dashboard() {
               <ul className="task-list">
                 {d.todaysAssignment.items.map((it) => (
                   <li key={it.id}>
-                    <span className={`pill pill--${it.kind}`}>{it.kind}</span>
+                    <span className={`pill pill--${it.kind}`}>
+                      {it.kind.replace(/_/g, " ")}
+                    </span>
                     <span className="task-list__reason">{it.reason}</span>
                     <span className="muted">{it.estMinutes}m</span>
                   </li>
@@ -102,7 +104,7 @@ export function Dashboard() {
           {d.nextTask ? (
             <div className="next-task">
               <span className={`pill pill--${d.nextTask.kind}`}>
-                {d.nextTask.kind}
+                {d.nextTask.kind.replace(/_/g, " ")}
               </span>
               <p>{d.nextTask.reason}</p>
               <p className="muted">~{d.nextTask.estMinutes} min</p>
