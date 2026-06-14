@@ -220,6 +220,8 @@ export const ptTasks = pgTable("pt_tasks", {
   }),
   title: text("title").notNull(),
   instructions: text("instructions").notNull(),
+  // Expected work product, e.g. "persuasive memorandum", "client letter".
+  expectedProduct: text("expected_product"),
   // Closed-universe file/library references or object-store asset pointers.
   fileLibrary: jsonb("file_library").$type<Record<string, unknown>>(),
   modelWorkProduct: text("model_work_product"),
@@ -227,6 +229,20 @@ export const ptTasks = pgTable("pt_tasks", {
   ...licenseColumns(),
   ...timestamps,
 });
+
+/** Issue checklist for a PT's model work product (issue-spotting). */
+export const ptTaskIssues = pgTable(
+  "pt_task_issues",
+  {
+    ptTaskId: uuid("pt_task_id")
+      .notNull()
+      .references(() => ptTasks.id, { onDelete: "cascade" }),
+    issueId: uuid("issue_id")
+      .notNull()
+      .references(() => issues.id, { onDelete: "cascade" }),
+  },
+  (t) => [primaryKey({ columns: [t.ptTaskId, t.issueId] })],
+);
 
 // --- Lessons / learning content (belongs to a course; Design §2) ---
 

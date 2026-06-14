@@ -262,3 +262,31 @@ export interface EssayAnalytics {
     timeSpentSeconds: number | null;
   }>;
 }
+
+export interface PtDoc {
+  name: string;
+  title: string;
+  body: string;
+}
+export interface PtTaskSummary {
+  id: string;
+  title: string;
+  expectedProduct: string | null;
+  timeLimitMinutes: number;
+}
+export interface PtTaskDetail {
+  id: string;
+  title: string;
+  instructions: string;
+  expectedProduct: string | null;
+  timeLimitMinutes: number;
+  files: PtDoc[];
+  library: PtDoc[];
+  rubric: string[];
+}
+export interface PtSubmitResult {
+  submissionId: string;
+  modelWorkProduct: string | null;
+  issueChecklist: Array<{ id: string; name: string }>;
+  rubric: string[];
+}

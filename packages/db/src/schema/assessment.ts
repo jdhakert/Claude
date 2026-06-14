@@ -197,6 +197,29 @@ export const ptSubmissions = pgTable("pt_submissions", {
   timeSpentSeconds: integer("time_spent_seconds"),
   status: attemptStatusEnum("status").notNull().default("in_progress"),
   submittedAt: timestamp("submitted_at", { withTimezone: true }),
+  // Grader workflow fields.
+  graderId: uuid("grader_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  gradedAt: timestamp("graded_at", { withTimezone: true }),
+  feedback: text("feedback"),
+  graderMeta: jsonb("grader_meta").$type<Record<string, unknown>>(),
+  ...timestamps,
+});
+
+/** Per-dimension PT score (organization, rule extraction, fact use, etc.). */
+export const ptScores = pgTable("pt_scores", {
+  id: pk(),
+  ptSubmissionId: uuid("pt_submission_id")
+    .notNull()
+    .references(() => ptSubmissions.id, { onDelete: "cascade" }),
+  dimension: text("dimension").notNull(),
+  score: integer("score").notNull(),
+  isSelfAssessment: boolean("is_self_assessment").notNull().default(true),
+  graderId: uuid("grader_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  notes: text("notes"),
   ...timestamps,
 });
 

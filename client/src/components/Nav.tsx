@@ -14,6 +14,7 @@ const ITEMS: NavItem[] = [
   { to: "/practice", label: "Practice", icon: "✍️" },
   { to: "/exams", label: "Exams", icon: "📝" },
   { to: "/essays", label: "Essays", icon: "📄" },
+  { to: "/pt", label: "PT", icon: "🗂️" },
 ];
 
 /** Primary navigation: a sidebar on desktop, a bottom bar on mobile (CSS). */

@@ -29,6 +29,13 @@
       "when": 1781443914353,
       "tag": "0003_equal_maximus",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1781444567165,
+      "tag": "0004_marvelous_hobgoblin",
+      "breakpoints": true
     }
   ]
 }

@@ -16,6 +16,8 @@ import { ExamResults } from "./routes/exam/ExamResults";
 import { Essays } from "./routes/essay/Essays";
 import { EssayWriter } from "./routes/essay/EssayWriter";
 import { GraderQueue } from "./routes/essay/GraderQueue";
+import { PtTasks } from "./routes/pt/PtTasks";
+import { PtWorkspace } from "./routes/pt/PtWorkspace";
 import { ContentAdmin } from "./routes/admin/ContentAdmin";
 import { NotFound } from "./routes/NotFound";
 
@@ -131,6 +133,22 @@ export function App() {
         element={
           <Protected roles={["grader", "instructor", "admin"]}>
             <GraderQueue />
+          </Protected>
+        }
+      />
+      <Route
+        path="/pt"
+        element={
+          <Protected>
+            <PtTasks />
+          </Protected>
+        }
+      />
+      <Route
+        path="/pt/:taskId"
+        element={
+          <Protected>
+            <PtWorkspace />
           </Protected>
         }
       />

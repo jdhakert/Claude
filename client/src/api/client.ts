@@ -17,6 +17,9 @@ import type {
   LessonView,
   PracticeItem,
   PracticeSubject,
+  PtSubmitResult,
+  PtTaskDetail,
+  PtTaskSummary,
 } from "./types";
 
 export class ApiError extends Error {
@@ -253,5 +256,26 @@ export const api = {
     apiFetch<{ submission: EssaySubmission }>(
       `/grader/essay-submissions/${id}/grade`,
       { method: "POST", body: JSON.stringify(input) },
+    ),
+
+  // --- Performance Tests ---
+  ptTasks: (courseId: string) =>
+    apiFetch<{ tasks: PtTaskSummary[] }>(`/pt-tasks?courseId=${courseId}`),
+  ptTask: (id: string) => apiFetch<PtTaskDetail>(`/pt-tasks/${id}`),
+  submitPt: (
+    id: string,
+    input: { responseText: string; timeSpentSeconds: number },
+  ) =>
+    apiFetch<PtSubmitResult>(`/pt-tasks/${id}/submissions`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  selfAssessPt: (
+    submissionId: string,
+    scores: Array<{ dimension: string; score: number }>,
+  ) =>
+    apiFetch<{ submissionId: string }>(
+      `/pt-submissions/${submissionId}/self-assessment`,
+      { method: "POST", body: JSON.stringify({ scores }) },
     ),
 };

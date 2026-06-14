@@ -423,7 +423,7 @@ export async function seed(db: AnyDb) {
     issueId: pse!.id,
   });
 
-  // --- Performance Test task ---
+  // --- Performance Test task (original, closed-universe placeholder) ---
   const [pt] = await db
     .insert(schema.ptTasks)
     .values({
@@ -431,17 +431,40 @@ export async function seed(db: AnyDb) {
       rubricId: rubric!.id,
       title: "Drafting a Persuasive Memo (Original Closed-Universe PT)",
       instructions:
-        "Using only the provided File and Library, draft a persuasive memorandum advising whether the bystander's statement is admissible.",
+        "You are an associate at Fictional & Partners. Using ONLY the provided File and Library, draft a persuasive memorandum to the supervising partner advising whether the bystander's out-of-court statement is admissible.",
+      expectedProduct: "Persuasive memorandum to the supervising partner",
       fileLibrary: {
-        files: ["client_intake_memo.txt"],
-        library: ["fictional_evidence_code_excerpt.txt"],
+        files: [
+          {
+            name: "client_intake_memo",
+            title: "File: Client Intake Memo",
+            body: "Our client, Dana Reyes, witnessed a hot-air balloon mishap at a county fair. A bystander shouted 'The left burner just cut out!' as the basket tipped. The bystander is now unavailable. Opposing counsel will object to any testimony repeating the shout. (All names and facts are fictional.)",
+          },
+          {
+            name: "supervisor_task_memo",
+            title: "File: Task Memo",
+            body: "Draft a persuasive memo arguing the statement is admissible. Address hearsay and any applicable exception, applying the Library to our facts.",
+          },
+        ],
+        library: [
+          {
+            name: "fictional_evidence_code",
+            title: "Library: Fictional Evidence Code §80",
+            body: "§80. Hearsay is an out-of-court statement offered to prove the truth of the matter asserted. §80.3 A present sense impression — a statement describing an event made while or immediately after perceiving it — is not excluded by the rule against hearsay. (Fictional code drafted for this exercise.)",
+          },
+        ],
       },
       modelWorkProduct:
-        "A memorandum applying the fictional evidence-code excerpt to the file facts...",
+        "MEMORANDUM\nTo: Supervising Partner\nRe: Admissibility of the bystander statement\n\nThe statement is hearsay under §80 because it is offered to prove the burner failed. However, under §80.3 it is a present sense impression — describing the event as the declarant perceived it — and is therefore admissible. Apply the File facts to each element... (original model product).",
       timeLimitMinutes: 90,
       ...lic,
     })
     .returning();
+
+  await db.insert(schema.ptTaskIssues).values({
+    ptTaskId: pt!.id,
+    issueId: pse!.id,
+  });
 
   // --- Course content: module → lessons → content blocks ---
   const [module] = await db
