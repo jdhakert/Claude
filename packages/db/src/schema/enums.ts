@@ -64,9 +64,12 @@ export const itemKindEnum = pgEnum("item_kind", ["mbe_single_best_answer"]);
 
 export const contentBlockKindEnum = pgEnum("content_block_kind", [
   "text",
+  "checklist",
   "rule_statement",
   "example",
+  "mini_quiz",
   "video",
+  "outline_download",
   "callout",
 ]);
 
@@ -116,8 +119,16 @@ export const progressLevelEnum = pgEnum("progress_level", [
   "issue",
 ]);
 
+export const lessonProgressStatusEnum = pgEnum("lesson_progress_status", [
+  "not_started",
+  "in_progress",
+  "completed",
+]);
+
 export const learningEventTypeEnum = pgEnum("learning_event_type", [
   "lesson_viewed",
+  "lesson_started",
+  "lesson_completed",
   "question_answered",
   "exam_started",
   "exam_completed",

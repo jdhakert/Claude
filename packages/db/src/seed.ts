@@ -381,6 +381,121 @@ export async function seed(db: AnyDb) {
     })
     .returning();
 
+  // --- Course content: module → lessons → content blocks ---
+  const [module] = await db
+    .insert(schema.modules)
+    .values({
+      courseId: course!.id,
+      title: "Evidence Foundations",
+      sortOrder: 1,
+    })
+    .returning();
+
+  const [hearsayLesson] = await db
+    .insert(schema.lessons)
+    .values({
+      moduleId: module!.id,
+      subtopicId: hearsay!.id,
+      title: "Hearsay Basics",
+      sortOrder: 1,
+      ...lic,
+    })
+    .returning();
+
+  await db.insert(schema.contentBlocks).values([
+    {
+      lessonId: hearsayLesson!.id,
+      kind: "text",
+      sortOrder: 1,
+      body: {
+        text: "Hearsay is an out-of-court statement offered to prove the truth of the matter asserted. If it is not offered for its truth, it is not hearsay.",
+      },
+    },
+    {
+      lessonId: hearsayLesson!.id,
+      kind: "rule_statement",
+      sortOrder: 2,
+      body: {
+        statement:
+          "A statement is hearsay if (1) it was made out of court and (2) it is offered to prove the truth of the matter asserted.",
+      },
+    },
+    {
+      lessonId: hearsayLesson!.id,
+      kind: "checklist",
+      sortOrder: 3,
+      body: {
+        title: "Hearsay analysis steps",
+        items: [
+          "Is there a statement?",
+          "Was it made out of court?",
+          "Is it offered for its truth?",
+          "Does an exception or exclusion apply?",
+        ],
+      },
+    },
+    {
+      lessonId: hearsayLesson!.id,
+      kind: "example",
+      sortOrder: 4,
+      body: {
+        prompt: "Witness testifies: 'Sam told me the light was red.'",
+        analysis:
+          "Offered to prove the light was red → hearsay. Offered only to show Sam could speak → not hearsay.",
+      },
+    },
+    {
+      lessonId: hearsayLesson!.id,
+      kind: "callout",
+      sortOrder: 5,
+      body: {
+        variant: "warning",
+        text: "Don't confuse a hearsay exception with non-hearsay. Exceptions admit hearsay; exclusions mean it was never hearsay.",
+      },
+    },
+    {
+      lessonId: hearsayLesson!.id,
+      kind: "mini_quiz",
+      sortOrder: 6,
+      body: {
+        question:
+          "An out-of-court statement offered to prove the truth of what it asserts is:",
+        choices: [
+          "Never admissible",
+          "Hearsay",
+          "Always admissible",
+          "Opinion",
+        ],
+        correctIndex: 1,
+        explanation: "By definition that is hearsay (subject to exceptions).",
+      },
+    },
+    {
+      lessonId: hearsayLesson!.id,
+      kind: "video",
+      sortOrder: 7,
+      body: { title: "Hearsay overview (placeholder)", durationSeconds: 0 },
+    },
+    {
+      lessonId: hearsayLesson!.id,
+      kind: "outline_download",
+      sortOrder: 8,
+      body: { title: "Evidence attack outline (placeholder)", fileRef: null },
+    },
+  ]);
+
+  // A second lesson (kept minimal) to exercise multi-lesson modules.
+  await db
+    .insert(schema.lessons)
+    .values({
+      moduleId: module!.id,
+      subtopicId: hearsay!.id,
+      title: "Present Sense Impression",
+      sortOrder: 2,
+      ...lic,
+    })
+    .returning();
+
   // --- Exams: diagnostic + full-length ---
   const [diagnostic, fullLength] = await db
     .insert(schema.exams)
@@ -626,6 +741,8 @@ export async function seed(db: AnyDb) {
     courseId: course!.id,
     studentId: student!.id,
     itemId: item!.id,
+    moduleId: module!.id,
+    lessonId: hearsayLesson!.id,
     examIds: { diagnostic: diagnostic!.id, fullLength: fullLength!.id },
   };
 }

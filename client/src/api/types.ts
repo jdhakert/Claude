@@ -41,3 +41,62 @@ export interface AuthUser {
   email: string;
   roles: string[];
 }
+
+export interface CourseSummary {
+  id: string;
+  slug: string;
+  title: string;
+  type: string;
+  jurisdiction: string;
+  description: string | null;
+  enrolled: boolean;
+}
+
+export interface ContentBlock {
+  id: string;
+  kind:
+    | "text"
+    | "checklist"
+    | "rule_statement"
+    | "example"
+    | "mini_quiz"
+    | "video"
+    | "outline_download"
+    | "callout";
+  body: Record<string, unknown>;
+}
+
+export interface CourseTree {
+  course: {
+    id: string;
+    title: string;
+    type: string;
+    description: string | null;
+  };
+  modules: Array<{
+    id: string;
+    title: string;
+    lessons: Array<{
+      id: string;
+      title: string;
+      licenseStatus: string;
+      progress: "not_started" | "in_progress" | "completed";
+    }>;
+  }>;
+}
+
+export interface LessonView {
+  lesson: {
+    id: string;
+    title: string;
+    licenseStatus: string;
+    preview: boolean;
+  };
+  blocks: ContentBlock[];
+  progress: {
+    status: "not_started" | "in_progress" | "completed";
+    timeSpentSeconds: number;
+    startedAt: string | null;
+    completedAt: string | null;
+  };
+}

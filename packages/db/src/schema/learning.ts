@@ -6,6 +6,7 @@ import {
   real,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 import { pk, timestamps } from "./_shared";
@@ -14,14 +15,41 @@ import {
   assignmentStatusEnum,
   errorCauseEnum,
   learningEventTypeEnum,
+  lessonProgressStatusEnum,
   progressLevelEnum,
   recallStageEnum,
   srsRatingEnum,
 } from "./enums";
 import { users } from "./identity";
 import { courses, issues } from "./taxonomy";
-import { flashcards } from "./content";
+import { flashcards, lessons } from "./content";
 import { questionAttempts } from "./assessment";
+
+/**
+ * Per-student lesson progress: start, completion, and accumulated time spent
+ * (Course Content Engine, Phase 8). One row per (user, lesson).
+ */
+export const lessonProgress = pgTable(
+  "lesson_progress",
+  {
+    id: pk(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    lessonId: uuid("lesson_id")
+      .notNull()
+      .references(() => lessons.id, { onDelete: "cascade" }),
+    status: lessonProgressStatusEnum("status").notNull().default("not_started"),
+    timeSpentSeconds: integer("time_spent_seconds").notNull().default(0),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    lastViewedAt: timestamp("last_viewed_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [
+    uniqueIndex("lesson_progress_user_lesson_unique").on(t.userId, t.lessonId),
+  ],
+);
 
 /**
  * Progress at every required grain (Design §2): overall / subject / subtopic /
