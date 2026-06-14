@@ -321,3 +321,71 @@ export interface AttackOutlineEntry {
   checklist: string[] | null;
   sortOrder: number;
 }
+
+export interface StudentAnalytics {
+  readiness: number | null;
+  coverage: number | null;
+  recency: number | null;
+  nextFocus: string | null;
+  subjects: Array<{
+    id: string;
+    name: string;
+    mastery: number | null;
+    examWeight: number;
+  }>;
+  subtopics: Array<{
+    id: string;
+    name: string;
+    subjectName: string;
+    mastery: number | null;
+  }>;
+  issues: Array<{
+    id: string;
+    name: string;
+    subjectName: string;
+    mastery: number | null;
+  }>;
+  timing: { avgSecondsPerQuestion: number | null };
+  calibration: Array<{
+    level: string;
+    count: number;
+    accuracy: number | null;
+    flag: "overconfident" | "underconfident" | null;
+  }>;
+  essayTrend: Array<{ submittedAt: string | null; overall: number | null }>;
+  ptTrend: Array<{ submittedAt: string | null; overall: number | null }>;
+  mbeAccuracyTrend: Array<{
+    date: string;
+    accuracy: number | null;
+    count: number;
+  }>;
+  completionTrend: Array<{ date: string; count: number }>;
+}
+export interface AdminStudent {
+  id: string;
+  email: string;
+  readiness: number | null;
+  lastActiveAt: string | null;
+  reasons?: string[];
+}
+export interface CohortOverview {
+  totalStudents: number;
+  averageReadiness: number | null;
+  distribution: { low: number; medium: number; high: number };
+}
+export interface ContentPerformance {
+  questionDifficulty: Array<{
+    itemId: string;
+    stem: string;
+    subject: string;
+    attempts: number;
+    correctRate: number | null;
+  }>;
+  commonlyMissedIssues: Array<{
+    issueId: string;
+    name: string;
+    misses: number;
+    attempts: number;
+    missRate: number | null;
+  }>;
+}

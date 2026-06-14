@@ -848,3 +848,28 @@ code {
   padding-top: 0.5rem;
   margin-top: 0.5rem;
 }
+
+/* ---------- Analytics tables ---------- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.data-table th {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.data-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.data-table .cap {
+  text-transform: capitalize;
+}

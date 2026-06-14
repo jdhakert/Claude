@@ -19,6 +19,8 @@ import { GraderQueue } from "./routes/essay/GraderQueue";
 import { PtTasks } from "./routes/pt/PtTasks";
 import { PtWorkspace } from "./routes/pt/PtWorkspace";
 import { Review } from "./routes/Review";
+import { Analytics } from "./routes/Analytics";
+import { AdminAnalytics } from "./routes/admin/AdminAnalytics";
 import { ContentAdmin } from "./routes/admin/ContentAdmin";
 import { NotFound } from "./routes/NotFound";
 
@@ -158,6 +160,22 @@ export function App() {
         element={
           <Protected>
             <Review />
+          </Protected>
+        }
+      />
+      <Route
+        path="/analytics"
+        element={
+          <Protected>
+            <Analytics />
+          </Protected>
+        }
+      />
+      <Route
+        path="/admin/analytics"
+        element={
+          <Protected roles={["instructor", "admin"]}>
+            <AdminAnalytics />
           </Protected>
         }
       />

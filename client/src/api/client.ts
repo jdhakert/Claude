@@ -25,6 +25,10 @@ import type {
   DueCard,
   RuleEntry,
   SrsRating,
+  StudentAnalytics,
+  AdminStudent,
+  CohortOverview,
+  ContentPerformance,
 } from "./types";
 
 export class ApiError extends Error {
@@ -322,6 +326,17 @@ export const api = {
   outline: (id: string) =>
     apiFetch<{ outline: AttackOutline; entries: AttackOutlineEntry[] }>(
       `/outlines/${id}`,
+    ),
+  // --- Analytics ---
+  myAnalytics: () => apiFetch<StudentAnalytics>("/analytics/me"),
+  adminStudents: () =>
+    apiFetch<{ students: AdminStudent[] }>("/admin/analytics/students"),
+  adminCohort: () => apiFetch<CohortOverview>("/admin/analytics/cohort"),
+  adminAtRisk: () =>
+    apiFetch<{ students: AdminStudent[] }>("/admin/analytics/at-risk"),
+  adminContent: (courseId: string) =>
+    apiFetch<ContentPerformance>(
+      `/admin/analytics/content?courseId=${courseId}`,
     ),
   addOutlineEntry: (
     outlineId: string,
