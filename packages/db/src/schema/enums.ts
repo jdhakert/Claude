@@ -158,8 +158,12 @@ export const assignmentStatusEnum = pgEnum("assignment_status", [
 
 export const assignmentBlockKindEnum = pgEnum("assignment_block_kind", [
   "new_learning",
+  "question_set",
   "spaced_review",
+  "flashcard_review",
+  "rule_review",
   "remediation",
+  "error_journal_review",
   "essay_practice",
   "pt_practice",
   "full_length_simulation",

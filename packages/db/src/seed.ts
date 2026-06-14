@@ -357,7 +357,8 @@ export async function seed(db: AnyDb) {
     intervalDays: 1,
     ease: 2.5,
     reps: 1,
-    dueAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    // Due now (slightly overdue) so the demo has a must-do review today.
+    dueAt: new Date(Date.now() - 1000 * 60 * 60),
   });
 
   // --- Essay rubric + prompt ---
