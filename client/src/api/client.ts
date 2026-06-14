@@ -32,6 +32,10 @@ import type {
   WrongAnswerPatterns,
   RedFlags,
   RemediationSet,
+  CmsKind,
+  CmsSummary,
+  CmsItem,
+  CmsHistoryEntry,
 } from "./types";
 
 export class ApiError extends Error {
@@ -337,6 +341,28 @@ export const api = {
   remediationSet: (issueId?: string) =>
     apiFetch<RemediationSet>(
       `/remediation/set${issueId ? `?issueId=${issueId}` : ""}`,
+    ),
+
+  // --- Admin CMS ---
+  cmsDashboard: () =>
+    apiFetch<{ summary: CmsSummary[] }>("/admin/cms/dashboard"),
+  cmsList: (kind: CmsKind, opts: { status?: string; q?: string } = {}) => {
+    const q = new URLSearchParams();
+    if (opts.status) q.set("status", opts.status);
+    if (opts.q) q.set("q", opts.q);
+    const qs = q.toString();
+    return apiFetch<{ items: CmsItem[] }>(
+      `/admin/cms/${kind}${qs ? `?${qs}` : ""}`,
+    );
+  },
+  cmsTransition: (kind: CmsKind, id: string, action: string) =>
+    apiFetch<{ content: CmsItem }>(`/admin/cms/${kind}/${id}/transition`, {
+      method: "POST",
+      body: JSON.stringify({ action }),
+    }),
+  cmsHistory: (kind: CmsKind, id: string) =>
+    apiFetch<{ history: CmsHistoryEntry[] }>(
+      `/admin/cms/${kind}/${id}/history`,
     ),
 
   // --- Analytics ---

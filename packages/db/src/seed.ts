@@ -116,6 +116,7 @@ export async function seed(db: AnyDb) {
     authorId: author!.id,
     reviewerId: reviewer!.id,
     version: 1,
+    contentStatus: "published" as const,
   };
 
   // --- Course + taxonomy ---

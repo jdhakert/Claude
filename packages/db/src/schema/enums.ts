@@ -60,6 +60,16 @@ export const licenseStatusEnum = pgEnum("license_status", [
   "expired",
 ]);
 
+// Editorial lifecycle, distinct from the licensing gate. Only `published`
+// content has its license_status set to `cleared` (student-visible).
+export const contentStatusEnum = pgEnum("content_status", [
+  "draft",
+  "in_review",
+  "approved",
+  "published",
+  "archived",
+]);
+
 export const itemKindEnum = pgEnum("item_kind", ["mbe_single_best_answer"]);
 
 export const contentBlockKindEnum = pgEnum("content_block_kind", [

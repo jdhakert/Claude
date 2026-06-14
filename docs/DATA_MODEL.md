@@ -139,3 +139,24 @@ today's daily assignment, and a license-transition audit entry.
 
 > **All seed content is original, fictional placeholder material.** No real,
 > released, or protected bar exam content is included (Policy §1).
+
+## Content lifecycle (CMS, Phase 17)
+Every licensed content table (`items`, `lessons`, `essay_prompts`, `pt_tasks`,
+`flashcards`) carries a `content_status` editorial lifecycle —
+`draft → in_review → approved → published → archived` — **distinct from** the
+`license_status` student-visibility gate.
+
+- **publish** is the only transition that sets `license_status = cleared`, and it
+  requires `content_status = approved` **and** complete source/license metadata
+  (source, provenance, jurisdiction, author, reviewer). Missing metadata blocks
+  publication.
+- **archive** un-clears the item (`license_status` → `in_review`) so students
+  immediately lose access.
+- **approve** requires a reviewer distinct from the author.
+- Every transition is recorded in `audit_logs` (before/after, actor), and
+  `publish` bumps `version` — giving audit/version history.
+
+Because all student-facing queries filter `license_status = 'cleared'`, only
+**published** content is ever visible to students. CMS endpoints live under
+`/admin/cms/*` and are role-gated (authors submit; reviewers/admins approve,
+publish, archive).

@@ -420,3 +420,31 @@ export interface RemediationSet {
     choices: Array<{ id: string; label: string; body: string }>;
   }>;
 }
+
+export type CmsKind = "question" | "lesson" | "essay" | "pt" | "flashcard";
+export interface CmsSummary {
+  kind: CmsKind;
+  label: string;
+  total: number;
+  byStatus: Record<string, number>;
+}
+export interface CmsItem {
+  kind: CmsKind;
+  id: string;
+  title: string;
+  contentStatus: string;
+  licenseStatus: string;
+  provenance: string;
+  jurisdiction: string;
+  version: number;
+  authorId: string;
+  reviewerId: string | null;
+}
+export interface CmsHistoryEntry {
+  action: string;
+  actorId: string | null;
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  reason: string | null;
+  at: string;
+}

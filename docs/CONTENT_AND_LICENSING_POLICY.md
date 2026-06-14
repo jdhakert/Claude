@@ -95,3 +95,18 @@ Supporting fields also tracked: `issues`/`rules tested` (for issue tracking, see
 - This is a policy document; the enforcing schema and review tooling are built
   per the Technical Charter and validated in
   [Beta Acceptance Criteria](./BETA_ACCEPTANCE_CRITERIA.md).
+
+## 8. Editorial lifecycle vs. licensing gate (CMS)
+The platform separates two concerns:
+- **`license_status`** — the *student-visibility gate*. Only `cleared` content is
+  served to students; this is enforced structurally in every student-facing query.
+- **`content_status`** — the *editorial lifecycle*
+  (`draft → in_review → approved → published → archived`), managed in the admin CMS.
+
+Publishing is the bridge: it is the **only** action that sets
+`license_status = cleared`, and it is blocked unless the item is `approved` and
+carries complete source/license metadata (source, provenance, jurisdiction,
+author, and a reviewer distinct from the author). Archiving un-clears content.
+All transitions are audit-logged and version-bumped. This makes "unapproved
+content never reaches students" and "missing metadata blocks publication"
+structural guarantees, not conventions.

@@ -22,6 +22,7 @@ import { Review } from "./routes/Review";
 import { Analytics } from "./routes/Analytics";
 import { Remediation } from "./routes/Remediation";
 import { AdminAnalytics } from "./routes/admin/AdminAnalytics";
+import { AdminCms } from "./routes/admin/AdminCms";
 import { ContentAdmin } from "./routes/admin/ContentAdmin";
 import { NotFound } from "./routes/NotFound";
 
@@ -193,6 +194,14 @@ export function App() {
         element={
           <Protected roles={["content_author", "content_reviewer", "admin"]}>
             <ContentAdmin />
+          </Protected>
+        }
+      />
+      <Route
+        path="/admin/cms"
+        element={
+          <Protected roles={["content_author", "content_reviewer", "admin"]}>
+            <AdminCms />
           </Protected>
         }
       />

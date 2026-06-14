@@ -13,6 +13,7 @@ import {
 import { pk, timestamps } from "./_shared";
 import {
   contentBlockKindEnum,
+  contentStatusEnum,
   itemKindEnum,
   jurisdictionEnum,
   licenseStatusEnum,
@@ -75,6 +76,9 @@ export const licenseColumns = () => ({
     onDelete: "restrict",
   }),
   version: integer("version").notNull().default(1),
+  // Editorial lifecycle (CMS). Publishing requires `approved` + metadata and is
+  // the only transition that sets license_status = cleared (student-visible).
+  contentStatus: contentStatusEnum("content_status").notNull().default("draft"),
 });
 
 // --- MBE question bank ---

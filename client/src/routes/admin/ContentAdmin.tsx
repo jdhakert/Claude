@@ -60,6 +60,9 @@ export function ContentAdmin() {
   return (
     <div className="page admin">
       <h1>Content authoring</h1>
+      <p>
+        <Link to="/admin/cms">→ Content lifecycle &amp; publishing (CMS)</Link>
+      </p>
 
       <section className="card">
         <h2>Create a course</h2>
