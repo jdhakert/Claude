@@ -17,6 +17,8 @@ import { examRoutes } from "./routes/exam.js";
 import { essayRoutes } from "./routes/essays.js";
 import { ptRoutes } from "./routes/pt.js";
 import { planRoutes } from "./routes/plan.js";
+import { retentionRoutes } from "./routes/retention.js";
+import { outlineRoutes } from "./routes/outlines.js";
 import { ensureBaseRoles } from "./services/roles.js";
 
 export interface BuildAppOptions {
@@ -71,6 +73,8 @@ export async function buildApp(
     await app.register(essayRoutes);
     await app.register(ptRoutes);
     await app.register(planRoutes);
+    await app.register(retentionRoutes);
+    await app.register(outlineRoutes);
   } else {
     app.log?.warn("No database configured — running health-only.");
   }

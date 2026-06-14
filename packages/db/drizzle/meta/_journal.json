@@ -43,6 +43,13 @@
       "when": 1781445286284,
       "tag": "0005_funny_randall",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1781445938140,
+      "tag": "0006_zippy_khan",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,5 @@
 import {
+  boolean,
   date,
   integer,
   jsonb,
@@ -21,7 +22,7 @@ import {
   srsRatingEnum,
 } from "./enums";
 import { users } from "./identity";
-import { courses, issues } from "./taxonomy";
+import { courses, issues, rules, subjects } from "./taxonomy";
 import { flashcards, lessons } from "./content";
 import { questionAttempts } from "./assessment";
 
@@ -134,6 +135,8 @@ export const srsReviews = pgTable("srs_reviews", {
   flashcardId: uuid("flashcard_id").references(() => flashcards.id, {
     onDelete: "cascade",
   }),
+  // SRS unit may instead be a black-letter rule (rule card).
+  ruleId: uuid("rule_id").references(() => rules.id, { onDelete: "cascade" }),
   issueId: uuid("issue_id").references(() => issues.id, {
     onDelete: "set null",
   }),
@@ -163,5 +166,60 @@ export const errorJournalEntries = pgTable("error_journal_entries", {
   }),
   cause: errorCauseEnum("cause").notNull(),
   note: text("note"),
+  ...timestamps,
+});
+
+/** Per-review log — review history + recall accuracy (Phase 14 §5). */
+export const srsReviewLogs = pgTable("srs_review_logs", {
+  id: pk(),
+  srsReviewId: uuid("srs_review_id")
+    .notNull()
+    .references(() => srsReviews.id, { onDelete: "cascade" }),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  rating: srsRatingEnum("rating").notNull(),
+  // Recall counts as correct when the rating is not "again".
+  wasCorrect: boolean("was_correct").notNull(),
+  intervalDays: real("interval_days").notNull(),
+  stage: recallStageEnum("stage").notNull().default("recognize"),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+/**
+ * Personal attack outline — a per-subject, issue-by-issue analysis scaffold
+ * (Design §13). Editable and tied to subjects/issues.
+ */
+export const attackOutlines = pgTable("attack_outlines", {
+  id: pk(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  courseId: uuid("course_id")
+    .notNull()
+    .references(() => courses.id, { onDelete: "cascade" }),
+  subjectId: uuid("subject_id").references(() => subjects.id, {
+    onDelete: "set null",
+  }),
+  title: text("title").notNull(),
+  ...timestamps,
+});
+
+/** An ordered entry within an attack outline. */
+export const attackOutlineEntries = pgTable("attack_outline_entries", {
+  id: pk(),
+  outlineId: uuid("outline_id")
+    .notNull()
+    .references(() => attackOutlines.id, { onDelete: "cascade" }),
+  issueId: uuid("issue_id").references(() => issues.id, {
+    onDelete: "set null",
+  }),
+  rule: text("rule"),
+  triggerFacts: text("trigger_facts"),
+  commonTraps: text("common_traps"),
+  checklist: text("checklist").array(),
+  sortOrder: integer("sort_order").notNull().default(0),
   ...timestamps,
 });

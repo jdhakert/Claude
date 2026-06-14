@@ -793,3 +793,58 @@ code {
   flex: 1;
   min-height: 24rem;
 }
+
+/* ---------- Review hub ---------- */
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+.tabs button {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid transparent;
+}
+.tabs button.active {
+  color: var(--ink);
+  font-weight: 600;
+  border-bottom-color: var(--brand);
+}
+.review-card {
+  max-width: 36rem;
+}
+.review-card__front {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.review-card__back {
+  font-size: 1.05rem;
+}
+.rating-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+.rating-row button {
+  text-transform: capitalize;
+}
+.cloze,
+.checklist-elements {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+.rule-drills {
+  display: grid;
+  gap: 1rem;
+}
+.outline-entry {
+  border-top: 1px solid var(--line);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+}

@@ -20,6 +20,11 @@ import type {
   PtSubmitResult,
   PtTaskDetail,
   PtTaskSummary,
+  AttackOutline,
+  AttackOutlineEntry,
+  DueCard,
+  RuleEntry,
+  SrsRating,
 } from "./types";
 
 export class ApiError extends Error {
@@ -278,4 +283,57 @@ export const api = {
       `/pt-submissions/${submissionId}/self-assessment`,
       { method: "POST", body: JSON.stringify({ scores }) },
     ),
+
+  // --- Retention: SRS, rules, outlines ---
+  srsDue: () => apiFetch<{ cards: DueCard[] }>("/srs/due"),
+  srsStats: () =>
+    apiFetch<{
+      totalReviews: number;
+      accuracy: number | null;
+      history: Array<{
+        rating: string;
+        wasCorrect: boolean;
+        reviewedAt: string;
+      }>;
+    }>("/srs/stats"),
+  reviewCard: (reviewId: string, rating: SrsRating) =>
+    apiFetch<{ intervalDays: number }>(`/srs/${reviewId}/review`, {
+      method: "POST",
+      body: JSON.stringify({ rating }),
+    }),
+  createCard: (input: { front: string; back: string; issueId?: string }) =>
+    apiFetch<{ card: { id: string } }>("/srs/cards", {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  rules: (courseId: string) =>
+    apiFetch<{ rules: RuleEntry[] }>(`/rules?courseId=${courseId}`),
+  drillRule: (ruleId: string, rating: SrsRating) =>
+    apiFetch<{ intervalDays: number }>(`/rules/${ruleId}/drill`, {
+      method: "POST",
+      body: JSON.stringify({ rating }),
+    }),
+  outlines: () => apiFetch<{ outlines: AttackOutline[] }>("/outlines"),
+  createOutline: (title: string, subjectId?: string) =>
+    apiFetch<{ outline: AttackOutline }>("/outlines", {
+      method: "POST",
+      body: JSON.stringify({ title, subjectId }),
+    }),
+  outline: (id: string) =>
+    apiFetch<{ outline: AttackOutline; entries: AttackOutlineEntry[] }>(
+      `/outlines/${id}`,
+    ),
+  addOutlineEntry: (
+    outlineId: string,
+    input: {
+      rule?: string;
+      triggerFacts?: string;
+      commonTraps?: string;
+      checklist?: string[];
+    },
+  ) =>
+    apiFetch<{ entry: AttackOutlineEntry }>(`/outlines/${outlineId}/entries`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
 };

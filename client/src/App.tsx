@@ -18,6 +18,7 @@ import { EssayWriter } from "./routes/essay/EssayWriter";
 import { GraderQueue } from "./routes/essay/GraderQueue";
 import { PtTasks } from "./routes/pt/PtTasks";
 import { PtWorkspace } from "./routes/pt/PtWorkspace";
+import { Review } from "./routes/Review";
 import { ContentAdmin } from "./routes/admin/ContentAdmin";
 import { NotFound } from "./routes/NotFound";
 
@@ -149,6 +150,14 @@ export function App() {
         element={
           <Protected>
             <PtWorkspace />
+          </Protected>
+        }
+      />
+      <Route
+        path="/review"
+        element={
+          <Protected>
+            <Review />
           </Protected>
         }
       />

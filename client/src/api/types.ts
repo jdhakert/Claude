@@ -290,3 +290,34 @@ export interface PtSubmitResult {
   issueChecklist: Array<{ id: string; name: string }>;
   rubric: string[];
 }
+
+export type SrsRating = "again" | "hard" | "good" | "easy";
+export interface DueCard {
+  reviewId: string;
+  stage: string;
+  front: string;
+  back: string;
+  isRule: boolean;
+}
+export interface RuleEntry {
+  id: string;
+  statement: string;
+  elements: string[] | null;
+  mnemonic: string | null;
+  issueId: string;
+  issueName: string;
+}
+export interface AttackOutline {
+  id: string;
+  title: string;
+  subjectId: string | null;
+}
+export interface AttackOutlineEntry {
+  id: string;
+  issueId: string | null;
+  rule: string | null;
+  triggerFacts: string | null;
+  commonTraps: string | null;
+  checklist: string[] | null;
+  sortOrder: number;
+}
