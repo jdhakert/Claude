@@ -6,12 +6,27 @@
  * included (Content & Licensing Policy §1). Provenance = `original`, fully
  * license-cleared, with reviewer ≠ author to exercise the workflow.
  */
+import { randomBytes, scrypt as scryptCb } from "node:crypto";
+import { promisify } from "node:util";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import type { PgDatabase } from "drizzle-orm/pg-core";
 import * as schema from "./schema/index";
 
 type AnyDb = PgDatabase<any, typeof schema, any>;
+
+const scrypt = promisify(scryptCb);
+
+/** Dev-only password for the seeded demo student (lets you log in and see data). */
+export const DEMO_STUDENT_EMAIL = "demo.student@example.com";
+export const DEMO_STUDENT_PASSWORD = "demo-password-123";
+
+/** Produce a scrypt hash in the same `scrypt$salt$hash` format the API uses. */
+async function hashPassword(password: string): Promise<string> {
+  const salt = randomBytes(16);
+  const derived = (await scrypt(password, salt, 64)) as Buffer;
+  return `scrypt$${salt.toString("hex")}$${derived.toString("hex")}`;
+}
 
 export async function seed(db: AnyDb) {
   // --- Roles (idempotent: server startup also ensures these) ---
@@ -33,7 +48,11 @@ export async function seed(db: AnyDb) {
   const [student, author, reviewer, admin] = await db
     .insert(schema.users)
     .values([
-      { email: "demo.student@example.com", emailVerifiedAt: new Date() },
+      {
+        email: DEMO_STUDENT_EMAIL,
+        emailVerifiedAt: new Date(),
+        passwordHash: await hashPassword(DEMO_STUDENT_PASSWORD),
+      },
       { email: "demo.author@example.com", emailVerifiedAt: new Date() },
       { email: "demo.reviewer@example.com", emailVerifiedAt: new Date() },
       { email: "demo.admin@example.com", emailVerifiedAt: new Date() },

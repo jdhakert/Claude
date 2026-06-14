@@ -1,4 +1,6 @@
-/** Basic landing page route (Phase 5 acceptance). */
+import { Link } from "react-router-dom";
+
+/** Public marketing landing page. */
 export function Landing() {
   return (
     <main className="landing">
@@ -12,9 +14,9 @@ export function Landing() {
         <li>Issue-level mastery, not just subject percentages.</li>
         <li>Honest readiness — never inflated.</li>
       </ul>
-      <a className="cta" href="/health-status">
-        Check platform status
-      </a>
+      <Link className="cta" to="/login">
+        Log in
+      </Link>
     </main>
   );
 }

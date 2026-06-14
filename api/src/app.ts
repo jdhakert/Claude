@@ -1,4 +1,5 @@
 import cookie from "@fastify/cookie";
+import cors from "@fastify/cors";
 import Fastify, { type FastifyInstance } from "fastify";
 import type { AppDb } from "./db.js";
 import { loadEnv, type Env } from "./env.js";
@@ -7,6 +8,7 @@ import { healthRoutes } from "./routes/health.js";
 import { authRoutes } from "./routes/auth.js";
 import { onboardingRoutes } from "./routes/onboarding.js";
 import { adminRoutes } from "./routes/admin.js";
+import { dashboardRoutes } from "./routes/dashboard.js";
 import { ensureBaseRoles } from "./services/roles.js";
 
 export interface BuildAppOptions {
@@ -35,6 +37,12 @@ export async function buildApp(
     disableRequestLogging: env.NODE_ENV === "test",
   });
 
+  // CORS with credentials so the browser PWA can send the session cookie
+  // cross-origin (client :5173 → API :3000). Origins come from validated env.
+  await app.register(cors, {
+    origin: env.CORS_ORIGINS.split(",").map((o) => o.trim()),
+    credentials: true,
+  });
   await app.register(cookie);
   app.decorateRequest("user", null);
   registerErrorHandler(app);
@@ -46,6 +54,7 @@ export async function buildApp(
     await app.register(authRoutes);
     await app.register(onboardingRoutes);
     await app.register(adminRoutes);
+    await app.register(dashboardRoutes);
   } else {
     app.log?.warn("No database configured — running health-only.");
   }

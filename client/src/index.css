@@ -1,22 +1,63 @@
 :root {
-  color-scheme: light dark;
+  --bg: #f6f7f6;
+  --surface: #ffffff;
+  --ink: #14211c;
+  --muted: #5d6b64;
+  --brand: #0b3d2e;
+  --brand-ink: #ffffff;
+  --line: #e3e8e5;
+  --warn: #b3541e;
+  color-scheme: light;
   font-family:
     system-ui,
     -apple-system,
-    Segoe UI,
+    "Segoe UI",
     Roboto,
     sans-serif;
   line-height: 1.5;
+  color: var(--ink);
+}
+
+* {
+  box-sizing: border-box;
 }
 body {
   margin: 0;
-  display: grid;
-  place-items: center;
+  background: var(--bg);
   min-height: 100vh;
 }
-.landing {
+h1,
+h2 {
+  line-height: 1.2;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--brand);
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.9rem;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+a {
+  color: var(--brand);
+}
+code {
+  background: var(--line);
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+}
+
+/* ---------- Landing + auth ---------- */
+.landing,
+.auth-page {
   max-width: 40rem;
-  padding: 2rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
 }
 .tagline {
   font-size: 1.2rem;
@@ -25,8 +66,296 @@ body {
   display: inline-block;
   margin-top: 1rem;
   padding: 0.6rem 1rem;
-  background: #0b3d2e;
-  color: #fff;
+  background: var(--brand);
+  color: var(--brand-ink);
   border-radius: 0.5rem;
   text-decoration: none;
+}
+.auth-form {
+  display: grid;
+  gap: 0.4rem;
+  max-width: 22rem;
+}
+.auth-form input {
+  padding: 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  font: inherit;
+}
+.auth-form button {
+  margin-top: 0.5rem;
+}
+.auth-hint,
+.muted {
+  color: var(--muted);
+}
+.form-error {
+  color: var(--warn);
+}
+
+/* ---------- App shell ---------- */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--brand);
+  color: var(--brand-ink);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.app-header__brand {
+  font-weight: 700;
+}
+.app-header__user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.app-header__email {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+.app-header__user button {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.app-body {
+  flex: 1;
+  display: flex;
+}
+.app-main {
+  flex: 1;
+  padding: 1.25rem;
+  padding-bottom: 5rem; /* room for mobile bottom nav */
+}
+.offline-banner {
+  background: var(--warn);
+  color: #fff;
+  text-align: center;
+  padding: 0.4rem;
+  font-size: 0.9rem;
+}
+
+/* ---------- Navigation (responsive) ---------- */
+.nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav__link,
+.nav__link--soon {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.5rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav__link--active {
+  background: var(--line);
+  font-weight: 600;
+}
+.nav__link--soon {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+/* Desktop: sidebar shown, bottom nav hidden */
+.app-sidebar {
+  width: 13rem;
+  border-right: 1px solid var(--line);
+  padding: 1rem 0.6rem;
+  background: var(--surface);
+}
+.app-bottomnav {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .app-sidebar {
+    display: none;
+  }
+  .app-bottomnav {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    z-index: 10;
+  }
+  .app-bottomnav .nav ul {
+    display: flex;
+    justify-content: space-around;
+  }
+  .app-bottomnav .nav__link,
+  .app-bottomnav .nav__link--soon {
+    flex-direction: column;
+    gap: 0.1rem;
+    font-size: 0.7rem;
+    padding: 0.45rem 0.3rem;
+  }
+}
+
+/* ---------- Dashboard ---------- */
+.dashboard {
+  max-width: 64rem;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+.card h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+.card--hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+.card--hero h2 {
+  opacity: 0.85;
+}
+.hero__readiness {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+.hero__sub {
+  margin: 0;
+  opacity: 0.9;
+}
+.hero__countdown {
+  text-align: center;
+  display: grid;
+}
+.hero__days {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.task-list,
+.subject-list,
+.weak-list,
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.task-list li,
+.weak-list li,
+.activity-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+.task-list__reason,
+.weak-list__name {
+  flex: 1;
+}
+.subject-list li {
+  display: grid;
+  grid-template-columns: 7rem 1fr 2.5rem;
+  align-items: center;
+  gap: 0.5rem;
+}
+.bar {
+  background: var(--line);
+  border-radius: 999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+.bar__fill {
+  display: block;
+  height: 100%;
+  background: var(--brand);
+}
+.pill {
+  font-size: 0.7rem;
+  text-transform: capitalize;
+  background: var(--line);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  white-space: nowrap;
+}
+.status-tag {
+  display: inline-block;
+  text-transform: capitalize;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-weight: 600;
+}
+.status-tag--completed {
+  background: #d8efe2;
+  color: var(--brand);
+}
+.status-tag--scheduled {
+  background: #fdeacc;
+  color: var(--warn);
+}
+.status-tag--not_started {
+  background: var(--line);
+  color: var(--muted);
+}
+
+/* ---------- States ---------- */
+.state {
+  padding: 1rem;
+  text-align: center;
+  color: var(--muted);
+}
+.state--error {
+  color: var(--warn);
+}
+.state__title {
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 0.25rem;
+}
+.spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  border: 2px solid var(--line);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
