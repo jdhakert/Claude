@@ -22,6 +22,7 @@
     "db:generate": "pnpm --filter @barready/db generate",
     "db:migrate": "pnpm --filter @barready/db migrate",
     "db:seed": "pnpm --filter @barready/db seed",
+    "db:seed:demo": "pnpm --filter @barready/db seed:demo",
     "prepare": "husky || true"
   },
   "devDependencies": {

@@ -52,13 +52,47 @@ pnpm dev:client   # client only → http://localhost:5173
 
 ```bash
 pnpm db:generate   # regenerate SQL migrations from the Drizzle schema
-pnpm db:migrate    # apply migrations         (requires DATABASE_URL)
-pnpm db:seed       # seed ORIGINAL demo data  (requires DATABASE_URL)
+pnpm db:migrate    # apply migrations              (requires DATABASE_URL)
+pnpm db:seed       # seed the LEAN dev dataset     (requires DATABASE_URL)
+pnpm db:seed:demo  # seed the FULL beta demo set   (requires DATABASE_URL)
 ```
 
 Schema and entities are documented in [docs/DATA_MODEL.md](docs/DATA_MODEL.md).
 All seed content is **original, fictional placeholder material** — no protected
 bar exam content (see [Content & Licensing Policy](docs/CONTENT_AND_LICENSING_POLICY.md)).
+
+### Seed datasets
+
+Run either against a fresh, migrated database (set `DATABASE_URL` first):
+
+| Command | Purpose | Contents |
+| --- | --- | --- |
+| `pnpm db:seed` | Minimal data the **test suite** relies on | 1 demo student, a small course, a few items/exams |
+| `pnpm db:seed:demo` | **Full beta walkthrough** dataset | 3 subjects · 5 modules · 10 lessons · 56 MBE items · 3 essays · 1 PT · diagnostic + periodic + full-length exams · 6 personas with populated analytics |
+
+**Demo personas** (all share the password `demo-password-123`, all beta-enabled):
+
+| Email | Role / persona | What it demonstrates |
+| --- | --- | --- |
+| `new.student@example.com` | Fresh student | Empty-state onboarding / first-day experience |
+| `active.student@example.com` | Engaged student | Balanced progress, graded essay + PT, due reviews, daily plan |
+| `mbe.weak@example.com` | Struggling on MBE | Low MBE accuracy, error patterns, overconfidence signal |
+| `essay.weak@example.com` | Struggling on essays | Strong-ish MBE but low grader essay scores |
+| `admin@example.com` | Admin (+ content reviewer) | Admin CMS, content operations, analytics |
+| `grader@example.com` | Grader | Essay/PT grading queue and feedback |
+
+> The demo seed is independent of the lean `db:seed` (different course slug and
+> emails). Run it on a **fresh** database — re-running on the same DB will
+> conflict on unique emails. Every item is `provenance = original` and
+> `license_status = cleared`; there is **no protected content**.
+
+Example:
+
+```bash
+export DATABASE_URL=postgres://postgres@localhost:5432/barready
+pnpm db:migrate && pnpm db:seed:demo
+# then `pnpm dev` and log in as any persona above (password: demo-password-123)
+```
 
 ## Quality gates
 
