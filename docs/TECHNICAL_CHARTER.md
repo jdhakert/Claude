@@ -155,4 +155,5 @@ module boundary over premature microservices.
 
 ## 7. Decision log
 Material architectural decisions are recorded as short ADR entries under
-`docs/adr/` once code begins. None yet — this charter is the seed.
+`docs/ADR/` once code begins. The first, [ADR 0001 — Stack](./ADR/0001-stack.md),
+is recorded.

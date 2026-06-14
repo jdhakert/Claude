@@ -41,7 +41,7 @@ this file is the short version.
 
 ## Working style
 - Small, descriptive commits and PRs; explain *why*. Record material
-  architecture decisions as ADRs under `docs/adr/`.
+  architecture decisions as ADRs under `docs/ADR/`.
 - Add dependencies deliberately; justify each one.
 - Don't add application code unless the task asks for it. Planning docs come
   before implementation.
