@@ -36,6 +36,8 @@ import type {
   CmsSummary,
   CmsItem,
   CmsHistoryEntry,
+  Account,
+  BillingPlan,
 } from "./types";
 
 export class ApiError extends Error {
@@ -342,6 +344,39 @@ export const api = {
     apiFetch<RemediationSet>(
       `/remediation/set${issueId ? `?issueId=${issueId}` : ""}`,
     ),
+
+  // --- Account + billing ---
+  account: () => apiFetch<Account>("/account"),
+  updateProfile: (patch: {
+    displayName?: string;
+    examDate?: string;
+    studyHoursPerWeek?: number;
+  }) =>
+    apiFetch<Account>("/account/profile", {
+      method: "PATCH",
+      body: JSON.stringify(patch),
+    }),
+  updateNotifications: (prefs: Record<string, boolean>) =>
+    apiFetch<{ notificationPrefs: Record<string, boolean> }>(
+      "/account/notifications",
+      { method: "PATCH", body: JSON.stringify({ prefs }) },
+    ),
+  billingPlans: () => apiFetch<{ plans: BillingPlan[] }>("/billing/plans"),
+  checkout: (plan: string) =>
+    apiFetch<{ provider: string; url: string; stubbed: boolean }>(
+      "/billing/checkout",
+      { method: "POST", body: JSON.stringify({ plan }) },
+    ),
+  checkoutComplete: (plan: string) =>
+    apiFetch<{ subscription: Account["subscription"] }>(
+      "/billing/checkout/complete",
+      { method: "POST", body: JSON.stringify({ plan }) },
+    ),
+  redeemBeta: (code: string) =>
+    apiFetch<{ betaAccess: boolean }>("/beta/redeem", {
+      method: "POST",
+      body: JSON.stringify({ code }),
+    }),
 
   // --- Admin CMS ---
   cmsDashboard: () =>

@@ -17,6 +17,9 @@ const EnvSchema = z.object({
   DATABASE_URL: z.string().url().optional(),
   // Comma-separated allowed origins for CORS (deny-by-default elsewhere).
   CORS_ORIGINS: z.string().default("http://localhost:5173"),
+  // Payment provider secret — optional. When unset, billing runs in safe stub
+  // mode (no live charges, no committed secrets).
+  STRIPE_SECRET_KEY: z.string().optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

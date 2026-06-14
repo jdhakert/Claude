@@ -908,3 +908,10 @@ code {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
+.app-header__account {
+  color: var(--brand-ink);
+  font-size: 0.85rem;
+  opacity: 0.9;
+  text-decoration: underline;
+}

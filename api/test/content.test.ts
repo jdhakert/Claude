@@ -53,6 +53,11 @@ async function signupAndPromote(email: string, role: string) {
     .from(schema.users)
     .where(eq(schema.users.email, email));
   await assignRoleByKey(db as never, u!.id, role);
+  // Grant beta access (course enrollment is invite-gated).
+  await db
+    .update(schema.users)
+    .set({ betaAccess: true })
+    .where(eq(schema.users.id, u!.id));
   return login(email, "password1234");
 }
 

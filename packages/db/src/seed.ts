@@ -52,10 +52,23 @@ export async function seed(db: AnyDb) {
         email: DEMO_STUDENT_EMAIL,
         emailVerifiedAt: new Date(),
         passwordHash: await hashPassword(DEMO_STUDENT_PASSWORD),
+        betaAccess: true,
       },
-      { email: "demo.author@example.com", emailVerifiedAt: new Date() },
-      { email: "demo.reviewer@example.com", emailVerifiedAt: new Date() },
-      { email: "demo.admin@example.com", emailVerifiedAt: new Date() },
+      {
+        email: "demo.author@example.com",
+        emailVerifiedAt: new Date(),
+        betaAccess: true,
+      },
+      {
+        email: "demo.reviewer@example.com",
+        emailVerifiedAt: new Date(),
+        betaAccess: true,
+      },
+      {
+        email: "demo.admin@example.com",
+        emailVerifiedAt: new Date(),
+        betaAccess: true,
+      },
     ])
     .returning();
 

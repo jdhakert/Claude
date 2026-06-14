@@ -21,6 +21,8 @@ export const users = pgTable(
     passwordHash: text("password_hash"),
     emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
     isActive: boolean("is_active").notNull().default(true),
+    // Beta is invite-only; granted by redeeming an invite or by an admin.
+    betaAccess: boolean("beta_access").notNull().default(false),
     ...timestamps,
   },
   (t) => [uniqueIndex("users_email_unique").on(t.email)],
@@ -42,6 +44,9 @@ export const profiles = pgTable("profiles", {
   // Future school/cohort association (nullable now — Architecture §3.1).
   organizationId: uuid("organization_id"),
   cohortId: uuid("cohort_id"),
+  // Notification preferences (email reminders, exam alerts, etc.).
+  notificationPrefs:
+    jsonb("notification_prefs").$type<Record<string, boolean>>(),
   ...timestamps,
 });
 

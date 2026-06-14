@@ -11,6 +11,12 @@ export const roleKeyEnum = pgEnum("role_key", [
 ]);
 
 // --- Billing ---
+export const betaInviteStatusEnum = pgEnum("beta_invite_status", [
+  "active",
+  "redeemed",
+  "revoked",
+]);
+
 export const subscriptionStatusEnum = pgEnum("subscription_status", [
   "trialing",
   "active",

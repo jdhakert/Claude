@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { Nav } from "./Nav";
 
@@ -32,7 +33,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <span className="app-header__brand">BarReady</span>
         {user && (
           <div className="app-header__user">
-            <span className="app-header__email">{user.email}</span>
+            <Link className="app-header__account" to="/account">
+              {user.email}
+            </Link>
             <button type="button" onClick={() => void logout()}>
               Log out
             </button>

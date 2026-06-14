@@ -4,6 +4,7 @@ import { AppError } from "../errors.js";
 import { requireAuth } from "../auth/guards.js";
 import { enroll, getCourseTree, listCourses } from "../services/courses.js";
 import { completeLesson, getLesson, startLesson } from "../services/lessons.js";
+import { hasBetaAccess } from "../services/billing/beta.js";
 
 const AUTHORING_ROLES = ["content_author", "content_reviewer", "admin"];
 
@@ -17,6 +18,13 @@ export async function courseRoutes(app: FastifyInstance): Promise<void> {
     { preHandler: requireAuth },
     async (request) => {
       const { courseId } = request.params as { courseId: string };
+      // Beta is invite-only: course access requires beta access.
+      if (!(await hasBetaAccess(app.db, request.user!.id)))
+        throw new AppError(
+          403,
+          "beta_required",
+          "Course access requires beta access — redeem an invite code first.",
+        );
       const result = await enroll(app.db, request.user!.id, courseId);
       if (!result) throw new AppError(404, "not_found", "Course not found.");
       return result;

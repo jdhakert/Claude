@@ -22,6 +22,8 @@ import { outlineRoutes } from "./routes/outlines.js";
 import { analyticsRoutes } from "./routes/analytics.js";
 import { featureRoutes } from "./routes/features.js";
 import { cmsRoutes } from "./routes/cms.js";
+import { billingRoutes } from "./routes/billing.js";
+import { accountRoutes } from "./routes/account.js";
 import { ensureBaseRoles } from "./services/roles.js";
 
 export interface BuildAppOptions {
@@ -81,6 +83,8 @@ export async function buildApp(
     await app.register(analyticsRoutes);
     await app.register(featureRoutes);
     await app.register(cmsRoutes);
+    await app.register(billingRoutes);
+    await app.register(accountRoutes);
   } else {
     app.log?.warn("No database configured — running health-only.");
   }

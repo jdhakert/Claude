@@ -21,6 +21,7 @@ import { PtWorkspace } from "./routes/pt/PtWorkspace";
 import { Review } from "./routes/Review";
 import { Analytics } from "./routes/Analytics";
 import { Remediation } from "./routes/Remediation";
+import { Account } from "./routes/Account";
 import { AdminAnalytics } from "./routes/admin/AdminAnalytics";
 import { AdminCms } from "./routes/admin/AdminCms";
 import { ContentAdmin } from "./routes/admin/ContentAdmin";
@@ -178,6 +179,14 @@ export function App() {
         element={
           <Protected>
             <Remediation />
+          </Protected>
+        }
+      />
+      <Route
+        path="/account"
+        element={
+          <Protected>
+            <Account />
           </Protected>
         }
       />

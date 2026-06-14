@@ -448,3 +448,27 @@ export interface CmsHistoryEntry {
   reason: string | null;
   at: string;
 }
+
+export interface Account {
+  user: { id: string; email: string; betaAccess: boolean };
+  profile: {
+    displayName: string | null;
+    examDate: string | null;
+    weeklyTimeBudgetMinutes: string | null;
+    notificationPrefs: Record<string, boolean>;
+  };
+  subscription: {
+    status: string;
+    plan: string;
+    entitlements: string[];
+    currentPeriodEnd: string | null;
+  } | null;
+  enrollments: Array<{ id: string; title: string }>;
+}
+export interface BillingPlan {
+  id: string;
+  name: string;
+  priceMonthlyUsd: number;
+  features: string[];
+  entitlements: string[];
+}
