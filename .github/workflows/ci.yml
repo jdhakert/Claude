@@ -38,6 +38,13 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # Dependency scan (Charter §4). Scans PRODUCTION deps at high+; a known,
+      # non-exploitable advisory is ignored with a documented reason in
+      # package.json (pnpm.auditConfig.ignoreGhsas) — see
+      # docs/FINAL_BETA_READINESS_REPORT.md.
+      - name: Dependency scan (prod)
+        run: pnpm audit:prod
+
   e2e:
     runs-on: ubuntu-latest
     steps:
